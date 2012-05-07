@@ -11,6 +11,9 @@
   "main":"./lib/snassets",
   "dependencies":{
     "async": "0.1.18",
+    "glob": "3.1.9",
+    "minimatch": "0.2.4",
+    "mkdirp": "0.3.2",
     "underscore": "1.3.3"
   },
   "devDependencies":{

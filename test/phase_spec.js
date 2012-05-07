@@ -4,13 +4,16 @@ var Phase = require('../lib/phase').Phase;
 describe('Phase', function () {
 
   describe('Initializing', function () {
+
     it('should have a name', function () {
       var p = new Phase('test');
       p.name.should.equal('test');
     });
+
   });
 
   describe('Adding operations', function () {
+
     it('should only add functions', function () {
       var p = new Phase('test');
       try {
@@ -20,6 +23,7 @@ describe('Phase', function () {
         e.message.should.equal('Op must be a function');
       }
     });
+
     it('should allow ops to be added', function () {
       var p = new Phase('test');
       p.add(function one() {
@@ -29,6 +33,7 @@ describe('Phase', function () {
       });
       p.ops.length.should.equal(2);
     });
+
     it('should allow ops to be added at specific location', function () {
       var fns = [
         function () {
@@ -50,9 +55,11 @@ describe('Phase', function () {
       p.ops[1].should.equal(fns[3]);
       p.ops[3].should.equal(fns[2]);
     });
+
   });
 
   describe('Removing operations', function () {
+
     it('should not remove nonexistent items', function () {
       var p = new Phase('test');
       p.add(function one() {
@@ -65,6 +72,7 @@ describe('Phase', function () {
       });
       p.ops.length.should.equal(2);
     });
+
     it('should allow items to be removed', function () {
       var fns = [
         function () {
@@ -84,9 +92,11 @@ describe('Phase', function () {
       p.ops.length.should.equal(1);
       p.ops.indexOf(fns[1]).should.equal(-1);
     });
+
   });
 
   describe('Executing', function () {
+
     it('should execute functions in order', function (done) {
       var p = new Phase('test');
       p.add(function (data, cb) {
@@ -111,9 +121,11 @@ describe('Phase', function () {
         done();
       });
     });
+
   });
 
   describe('Events', function () {
+
     it('should emit the right events', function (done) {
       var emitted = [];
       var p = new Phase('test');
@@ -145,6 +157,9 @@ describe('Phase', function () {
         emitted.should.eql(['add', 'add', 'add', 'remove', 'startExecute', 'finishExecute']);
         done();
       });
+
     });
+
   });
+
 });
