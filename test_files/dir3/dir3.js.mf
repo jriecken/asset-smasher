@@ -1,0 +1,4 @@
+require "../dir1/dir1_four"
+require_dir "../dir2/dir2_1"
+require_tree "."
+require "../dir1/dir1.js.mf"
