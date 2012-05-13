@@ -2,13 +2,9 @@
   "name":"snassets",
   "version":"0.1.0",
   "author":"Jim Riecken <jriecken@gmail.com>",
-  "description":"An asset management system for node.",
-  "keywords":[
-    "asset",
-    "minification"
-  ],
+  "description":"An asset pipeline for node.",
   "license":"MIT",
-  "main":"./lib/snassets",
+  "main":"./lib/index.js",
   "dependencies":{
     "async": "0.1.18",
     "glob": "3.1.9",
@@ -19,9 +15,6 @@
   "devDependencies":{
     "mocha": "1.0.3",
     "should": "0.6.3"
-  },
-  "engines":{
-    "node":"*"
   },
   "private":true
 }
