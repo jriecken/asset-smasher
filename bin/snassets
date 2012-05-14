@@ -11,25 +11,32 @@ function listify(val) {
 
 program.
   version(require('../package.json').version).
-  usage('[options] <output dir> [file ...]').
+  usage('[options] <output dir>').
   option('--compress', 'compress/minify the generated files').
   option('--hash', 'generate versions of the files with md5 hashes in the name').
   option('--gzip', 'generate gzipped versions of the compiled files').
   option('--hashVersion <version>', 'invalidate all assets without changing file contents [1.0]', '1.0').
-  option('--only <pattern,...>', 'only process the files matching patterns (relative to any of the paths) [**/*]', listify).
+  option('--only <pattern,...>', 'only process the files matching these glob patterns (relative to any of the paths) [**/*]', listify).
   option('--paths <path,...>', 'list of paths to look for assets [.]', listify, [process.cwd()]).
   option('--prefix <prefix>', 'prefix to append to referenced paths []', '').
   option('--helpers <js_file>', 'a .js file of helper functions require()s to expose to transforms []');
 
 program.on('--help', function() {
   console.log('  If --only is not specified, *all* files in the --paths will be processed.');
-  console.log('  Files passed to --only can be glob patterns.');
-  console.log('');
+  console.log();
   console.log('  Examples:');
-  console.log('');
-  console.log('    $ snassets output');
-  console.log('    $ snassets --compress --hash --prefix=/assets \\\n        --paths=./js,./css --only **/*.{jpg,gif,png},application.js.mf output');
-  console.log('    $ snassets --helpers helpers.js output');
+  console.log();
+  console.log('    Compile all assets in the current directory to /home/me/compiledAssets');
+  console.log();
+  console.log('      $ snassets /home/me/compiledAssets');
+  console.log();
+  console.log('    Something similar to what the Rails asset pipeline does by default');
+  console.log();
+  console.log('      $ snassets --compress --hash --gzip --prefix=/assets \\\n          --paths=./js,./css,./images \\\n          --only **/*.{jpg,gif,png},application.js.mf,application.css.mf ./public/assets');
+  console.log();
+  console.log('    Compile assets, providing some custom helpers to the transformation');
+  console.log();
+  console.log('      $ snassets --helpers helpers.js output');
 });
 
 program.parse(process.argv);
@@ -37,7 +44,7 @@ program.parse(process.argv);
 var outputTo = program.args.shift();
 if (!outputTo) {
   console.error();
-  console.error('  error: missing output directory');
+  console.error('  Error: missing output directory');
   console.error();
   process.exit(1);
 }
@@ -45,7 +52,7 @@ try {
   var stat = fs.statSync(outputTo);
   if(!stat.isDirectory()) {
     console.error();
-    console.error('  error: output directory is not a directory');
+    console.error('  Error: output directory is not a directory');
     console.error();
     process.exit(1);
   }
@@ -68,11 +75,12 @@ var startTime = Date.now();
 snass.compileAssets(function(err) {
   if(err) {
     console.error();
-    console.error('  error: %s', err.message);
-    console.error(err);
+    console.error('  Error: %s', err.message);
     console.error();
     process.exit(1);
   } else {
+    console.log();
     console.log('Finished in %d ms', (Date.now() - startTime));
+    console.log();
   }
 });
