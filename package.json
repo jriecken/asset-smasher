@@ -2,7 +2,7 @@
   "name":"snassets",
   "version":"0.1.0",
   "author":"Jim Riecken <jriecken@gmail.com>",
-  "description":"An asset pipeline for node.",
+  "description":"An asset manager.",
   "license":"MIT",
   "main":"./lib/index.js",
   "bin": {
