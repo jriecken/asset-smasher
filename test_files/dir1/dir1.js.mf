@@ -1,3 +1,0 @@
-require "./dir1_one"
-require "./dir1_two"
-require "./dir1_four"

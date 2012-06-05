@@ -1,1 +1,0 @@
-var dir2_1_one = 'dir2_1_one';
