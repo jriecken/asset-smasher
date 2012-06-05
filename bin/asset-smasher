@@ -3,7 +3,8 @@
 var program = require('commander');
 var fs = require('fs');
 var path = require('path');
-var Snassets = require('../lib/index.js').Snassets;
+var smasherLib = require('../lib/asset-smasher');
+var Smasher = smasherLib.Smasher;
 
 function listify(val) {
   return val.split(',');
@@ -19,7 +20,8 @@ program.
   option('--only <pattern,...>', 'only process the files matching these glob patterns (relative to any of the paths) [**/*]', listify).
   option('--paths <path,...>', 'list of paths to look for assets [.]', listify, [process.cwd()]).
   option('--prefix <prefix>', 'prefix to append to referenced paths []', '').
-  option('--helpers <js_file>', 'a .js file of helper functions require()s to expose to transforms []');
+  option('--helpers <js_file>', 'a .js module of helper functions require()s to expose to transforms []').
+  option('--plugins <js_file>', 'a .js plugin module []');
 
 program.on('--help', function() {
   console.log('  If --only is not specified, *all* files in the --paths will be processed.');
@@ -28,15 +30,15 @@ program.on('--help', function() {
   console.log();
   console.log('    Compile all assets in the current directory to /home/me/compiledAssets');
   console.log();
-  console.log('      $ snassets /home/me/compiledAssets');
+  console.log('      $ asset-smasher /home/me/compiledAssets');
   console.log();
   console.log('    Something similar to what the Rails asset pipeline does by default');
   console.log();
-  console.log('      $ snassets --compress --hash --gzip --prefix=/assets \\\n          --paths=./js,./css,./images \\\n          --only **/*.{jpg,gif,png},application.js.mf,application.css.mf ./public/assets');
+  console.log('      $ asset-smasher --compress --hash --gzip --prefix=/assets \\\n          --paths=./js,./css,./images \\\n          --only **/*.{jpg,gif,png},application.js.mf,application.css.mf ./public/assets');
   console.log();
   console.log('    Compile assets, providing some custom helpers to the transformation');
   console.log();
-  console.log('      $ snassets --helpers helpers.js output');
+  console.log('      $ asset-smasher --helpers helpers.js output');
 });
 
 program.parse(process.argv);
@@ -60,7 +62,12 @@ try {
   // Ignore, we'll create the directory
 }
 
-var snass = new Snassets({
+if(program.plugins) {
+  // Allow plugin js module to modify transformers, etc
+  require(path.resolve(program.plugins)(smasherLib));
+}
+
+var smash = new Smasher({
   paths:program.paths,
   only:program.only,
   prefix:program.prefix,
@@ -72,13 +79,15 @@ var snass = new Snassets({
   helpers:program.helpers ? require(path.resolve(program.helpers)) : null
 });
 var startTime = Date.now();
-snass.compileAssets(function(err) {
+smash.compileAssets(function(err) {
   if(err) {
     console.error();
     console.error('  Error: %s', err.message);
     console.error();
     process.exit(1);
   } else {
+    // Write the filename mapping file.
+    fs.writeFileSync(path.join(outputTo, 'map.json'), JSON.stringify(smash.getHashedFileMapping()), 'utf-8');
     console.log();
     console.log('Finished in %d ms', (Date.now() - startTime));
     console.log();
