@@ -2,6 +2,14 @@
 
 Asset pre-processor, merger, and compressor for Node.js
 
+- [Structuring Your Assets](#structure-assets)
+    - [Manifest Files](#manifest-files)
+- [Using via Command Line](#command-line)
+    - [Helpers](#cli-helpers)
+    - [Plugins](#cli-plugins)
+- [Using via Express Middleware](#express-middleware)
+- [Using via Programmatic Interface](#programmatic-interface)
+
 ## Overview
 
 Asset Smasher is a command-line tool, express middleware, and programmatic interface for:
@@ -24,11 +32,128 @@ Asset Smasher is a command-line tool, express middleware, and programmatic inter
     - Generate Gzipped versions of files
     - Include a MD5 hash of the file's contents in the file name. `myAsset.js` -> `myAsset-c89cba7b7df028e65cb01d86f4d27077.js`
 
-## Structuring Your Assets
 
-## Usage
+## <a name="structure-assets"></a> Structuring Your Assets
 
-### Command-Line
+Asset Smasher has the concept of "asset paths".  These are locations in which your asset files will be located, and from which any relative asset paths will be rooted to.
+
+The simplest structure has one asset path.
+
+E.g.
+
+    Asset Paths
+    -----------
+     - app
+
+    File Structure
+    --------------
+    app/
+      js/
+      css/
+      images/
+
+A more complicated structure might be
+
+    Asset Paths
+    -----------
+     - app
+     - lib
+     - vendor
+
+    File Structure
+    --------------
+    app/
+      js/
+      css/
+      images/
+    lib/
+      js/
+      css/
+      images/
+    vendor/
+      js/
+      css/
+      images/
+
+Both of these examples will result in a compiled structure of
+
+    js/
+    css/
+    images/
+
+### <a name="manifest-files"></a> Manifest Files
+
+Manifest (`.mf`) files are used to merge many assets into a single resulting file. The file should be named with the resulting file type before the `.mf` extension (e.g. `manifest.css.mf` or `manifest.js.mf`. *Manifest files can `require` other manifest files*
+
+A simple manifest file might look like
+
+    # A comment here
+    require "./one.js"
+    require_dir "./subdir1"
+    #
+    # Another comment
+    require_tree "./subdir2"
+
+**Directives:**
+
+<table border="1" cellpadding="5" cellspacing="0" width="100%">
+ <thead>
+  <tr><th width="15%">Directive</th><th width="85%">Description</th></tr>
+ </thead>
+ <tbody>
+  <tr>
+    <td><code>require "[path]"</code></td>
+    <td>
+      <strong>Include a single file</strong>
+      <ul>
+       <li>
+         If the path starts with <code>"/"</code>, <code>"../"</code>, or <code>"./"</code>, process and include the specified file.  The file <em>must</em> be
+         inside one of the configured asset paths.
+       </li>
+       <li>
+         If the path does not start with <code>"/"</code>, <code>"../"</code>, or <code>"./"</code>, the file will be searched for in all of the configured
+         asset paths.  E.g. if there are asset paths <code>one</code> and <code>two</code> defined, <code>require "js/test.js"</code>
+         will look for <code>one/js/test.js</code> and then <code>two/js/test.js</code> stopping when it finds a matching file.
+       </li>
+       <li>
+         The filename part of the path does not have to include the whole extension.  E.g <code>require "test"</code>
+         finds the first file that matches the name in the asset paths (for example <code>test.js.ejs</code>)
+       </li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td><code>require_dir "[path]"</code></td>
+    <td>
+      <strong>Include all the files in a directory</strong>
+      <ul>
+       <li>
+         The path must be absolute, or relative to the current directory.  E.g. you can do <code>require_dir "../some/other/dir"</code>
+         but not <code>require_dir "somedir"</code>
+       </li>
+       <li>
+         If using absolute paths, or <code>".."</code> in your paths, the resulting directory needs to be inside one of the configured asset paths.
+       </li>
+       <li>
+         Make sure the directory only contains assets of the type you want.  E.g. for <code>myManifest.js.mf</code>, the dir required had better
+         only contain javascript files, or else bad things will happen.
+       </li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td><code>require_tree "[path]"</code></td>
+    <td>
+      <strong>Include the files in a directory recursively</strong>
+      <ul>
+        <li>The rules for <code>require_tree</code> are the same as the rules for <code>require_dir</code></li>
+      </ul>
+    </td>
+  </tr>
+ </tbody>
+</table>
+
+## <a name="command-line"></a> Using via Command-Line
 
 Use `npm install -g asset-smasher` to install the `asset-smasher` command-line tool globally.
 
@@ -68,10 +193,9 @@ Use `npm install -g asset-smasher` to install the `asset-smasher` command-line t
 
             $ asset-smasher --helpers helpers.js output
 
-#### Helpers
+### <a name="cli-helpers"></a> Helpers
 
-Some transformers (e.g. the `.ejs` one) take in a set of local variables that they can use during transformation.
-You can pass in the path to a JavaScript module whose exports will be included in this set of variables.
+Some transformers (e.g. the `.ejs` one) take in a set of local variables that they can use during transformation. You can pass in the path to a JavaScript module whose exports will be included in this set of variables.
 
 You can use this, for example, to set configuration parameters in your JS files:
 
@@ -91,11 +215,53 @@ You can use this, for example, to set configuration parameters in your JS files:
     $ cat config.js
     var serviceUrl = 'http://my.service/';
 
+### <a name="cli-plugins"></a> Plugins
 
-### Express
+If there's a type of file you want to pre-process that is not natively supported by Asset Smasher, you can add it using a plugin file.
+
+*`TODO: How to add additional transformers via a plugin file.`*
+
+## <a name='express-middleware"></a> Using via Express Middleware
 
 Asset smasher exposes an `express` middleware that can:
+
 - Serve your assets un-merged/mangled in development mode.
 - Serve the smashed assets in production mode.
 
-### Programmatic Interface
+*`TODO: How to use the middleware.`*
+
+## <a name="programmatic-interface"></a> Using via Programmatic Interface
+
+You can invoke Asset Smasher programmatically by `require`ing it.  You can also plug in additional transformers this way.
+
+*`TODO: More info`*
+
+**Example**
+
+    var assetSmasher = require('asset-smasher');
+    var Smasher = assetSmasher.Smasher;
+
+    // Plug in a custom transformer
+    assetSmasher.transforms['MyAwesomeFormat'] = require('myAwesomeFormatTransformer');
+
+    var sm = new Smasher({
+      paths:['/path/one', '/path/two'],
+      only:['**/*.{jpg,gif,png}', 'application.js.mf', 'application.css.mf'],
+      prefix:'assets',
+      compress:true,
+      hash:true,
+      gzip:true,
+      version:'1.0',
+      outputTo:'/path/to/output/dir',
+      helpers:{
+       my: 'helper',
+       another: 'helper'
+      }
+    });
+    sm.compileAssets(function(err) {
+      if(err) {
+        console.log('An error occurred', err);
+      } else {
+        console.log('Compilation done!');
+      }
+    });
