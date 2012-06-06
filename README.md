@@ -9,6 +9,10 @@ Asset pre-processor, merger, and compressor for Node.js
     - [Plugins](#cli-plugins)
 - [Using via Express Middleware](#express-middleware)
 - [Using via Programmatic Interface](#programmatic-interface)
+- [Transformer Notes](#transformer-notes)
+    - [LESS](#tn-less)
+    - [ejs](#tn-ejs)
+    - [dust and Handlebars](#tn-dust-hbs)
 
 ## Overview
 
@@ -31,7 +35,9 @@ Asset Smasher is a command-line tool, express middleware, and programmatic inter
     - Compress LESS during LESS preprocessing
     - Generate Gzipped versions of files
     - Include a MD5 hash of the file's contents in the file name. `myAsset.js` -> `myAsset-c89cba7b7df028e65cb01d86f4d27077.js`
+        - `asset_path` helper that can be used to reference the hashed name.
 
+It's released under the [MIT](http://en.wikipedia.org/wiki/MIT_License)
 
 ## <a name="structure-assets"></a> Structuring Your Assets
 
@@ -195,6 +201,8 @@ Use `npm install -g asset-smasher` to install the `asset-smasher` command-line t
 
 ### <a name="cli-helpers"></a> Helpers
 
+There is a built-in `asset_path` helper that can be used to get the "real" (i.e. with hashed file name) path of an asset.  E.g. `asset_path('css/myFile.css')` might return `'/assets/css/myFile-c89cba7b7df028e65cb01d86f4d27077.css`.
+
 Some transformers (e.g. the `.ejs` one) take in a set of local variables that they can use during transformation. You can pass in the path to a JavaScript module whose exports will be included in this set of variables.
 
 You can use this, for example, to set configuration parameters in your JS files:
@@ -265,3 +273,21 @@ You can invoke Asset Smasher programmatically by `require`ing it.  You can also 
         console.log('Compilation done!');
       }
     });
+
+## <a name="transformer-notes"></a> Transformer Notes
+
+### <a name="tn-less"></a> LESS
+
+- When the `compress` option is true, the compression is done directly via the `less` compiler
+- Any `@include` paths are *relative to the path that the file is in*.
+- Any `@include`d files will *not* be processed individually by Asset Smasher (i.e. you can't `@include` a LESS file that is preprocessed by ejs)
+
+### <a name="tn-ejs"></a> ejs
+
+- Any registered helpers will be exposed as global variables to the `ejs` transform.
+- The built-in `asset_paths` helper can be used here.
+
+### <a name="tn-dust-hbs"></a> dust and Handlebars
+
+- The name of the template will be the template's "logical path" (minus the asset path it is in), minus the `.js.dust` or `.js.hbs` file extension.
+    - E.g. `/my/templates/test.js.dust`'s template name will be `test` (assuming `/my/templates` is the asset path)
