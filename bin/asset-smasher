@@ -74,7 +74,7 @@ var smash = new Smasher({
   compress:program.compress,
   hash:program.hash,
   gzip:program.gzip,
-  version:program.hashVersion,
+  hashVersion:program.hashVersion,
   outputTo:outputTo,
   helpers:program.helpers ? require(path.resolve(program.helpers)) : null
 });

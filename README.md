@@ -258,8 +258,8 @@ You can invoke Asset Smasher programmatically by `require`ing it.  You can also 
       prefix:'/assets',
       compress:true,
       hash:true,
+      hashVersion:'1.0',
       gzip:true,
-      version:'1.0',
       outputTo:__dirname + '/public/assets',
       helpers:{
        my: 'helper',
