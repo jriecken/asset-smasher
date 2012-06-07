@@ -177,7 +177,7 @@ Use `npm install -g asset-smasher` to install the `asset-smasher` command-line t
           --hashVersion <version>  invalidate all assets without changing file contents [1.0]
           --only <pattern,...>     only process the files matching these glob patterns (relative to any of the paths) [**/*]
           --paths <path,...>       list of paths to look for assets [.]
-          --prefix <prefix>        prefix to append to logical paths when constructing urls []
+          --prefix <prefix>        prefix to append to logical paths when constructing urls. use if output dir is not served from the root of your web app []
           --helpers <js_file>      a .js module of helper functions require()s to expose to transforms []
           --plugins <js_file>      a .js plugin module []
 
