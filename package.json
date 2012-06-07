@@ -1,9 +1,25 @@
 {
   "name": "asset-smasher",
+  "description": "Asset pre-processor, merger, and compressor.",
   "version": "0.1.0",
   "author": "Jim Riecken <jriecken@gmail.com>",
-  "description": "Asset pre-processor, merger, and compressor.",
-  "license": "MIT",
+  "keywords": [
+    "asset",
+    "compress",
+    "merge",
+    "preprocess"
+  ],
+  "license": {
+    "type": "MIT",
+    "url": "http://github.com/jriecken/asset-smasher/raw/master/LICENSE"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jriecken/asset-smasher.git"
+  },
+  "bugs": {
+    "url": "http://github.com/jriecken/asset-smasher/issues"
+  },
   "main": "./lib/asset-smasher.js",
   "bin": {
     "asset-smasher": "./bin/asset-smasher"

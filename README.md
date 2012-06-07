@@ -37,7 +37,7 @@ Asset Smasher is a command-line tool, express middleware, and programmatic inter
     - Include a MD5 hash of the file's contents in the file name. `myAsset.js` -> `myAsset-c89cba7b7df028e65cb01d86f4d27077.js`
         - `asset_path` helper that can be used to reference the hashed name.
 
-It's released under the [MIT](http://en.wikipedia.org/wiki/MIT_License)
+It's released under the [MIT](http://en.wikipedia.org/wiki/MIT_License) license.
 
 ## <a name="structure-assets"></a> Structuring Your Assets
 
