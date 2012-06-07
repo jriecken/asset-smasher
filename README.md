@@ -177,7 +177,7 @@ Use `npm install -g asset-smasher` to install the `asset-smasher` command-line t
           --hashVersion <version>  invalidate all assets without changing file contents [1.0]
           --only <pattern,...>     only process the files matching these glob patterns (relative to any of the paths) [**/*]
           --paths <path,...>       list of paths to look for assets [.]
-          --prefix <prefix>        prefix to append to referenced paths []
+          --prefix <prefix>        prefix to append to logical paths when constructing urls []
           --helpers <js_file>      a .js module of helper functions require()s to expose to transforms []
           --plugins <js_file>      a .js plugin module []
 
@@ -255,12 +255,12 @@ You can invoke Asset Smasher programmatically by `require`ing it.  You can also 
     var sm = new Smasher({
       paths:['/path/one', '/path/two'],
       only:['**/*.{jpg,gif,png}', 'application.js.mf', 'application.css.mf'],
-      prefix:'assets',
+      prefix:'/assets',
       compress:true,
       hash:true,
       gzip:true,
       version:'1.0',
-      outputTo:'/path/to/output/dir',
+      outputTo:__dirname + '/public/assets',
       helpers:{
        my: 'helper',
        another: 'helper'
