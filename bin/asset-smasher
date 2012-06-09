@@ -88,7 +88,9 @@ smash.compileAssets(function(err) {
     process.exit(1);
   } else {
     // Write the filename mapping file.
-    fs.writeFileSync(path.join(outputTo, 'map.json'), JSON.stringify(smash.getHashedFileMapping()), 'utf-8');
+    if(program.hash) {
+      fs.writeFileSync(path.join(outputTo, 'map.json'), JSON.stringify(smash.getHashedFileMapping()), 'utf-8');
+    }
     console.log();
     console.log('Finished in %d ms', (Date.now() - startTime));
     console.log();
