@@ -25,6 +25,7 @@ program.
 
 program.on('--help', function() {
   console.log('  If --only is not specified, *all* files in the --paths will be processed.');
+  console.log('  If --hash is specified, a map.json file will be generated that maps the unmangled file name to the hashed one.');
   console.log();
   console.log('  Examples:');
   console.log();
