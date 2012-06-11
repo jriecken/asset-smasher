@@ -303,6 +303,7 @@ The `Asset` object returned by `getAssetByLogicalPath` has the following propert
  - `hashedPath` - If `hash` is true, the hashed filename path, otherwise the same as `logicalPath`
  - `assetFilePath` - The full path to the actual source asset
  - `compiled` - Whether the asset has been compiled
+ - `compiledAssetFilePath` - The full path to the compiled asset file
 
 **Example**
 
