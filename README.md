@@ -297,13 +297,16 @@ The `Smasher` object has the following methods:
  - `getHashedFileMapping()` - When `hash` is true, this returns a mapping of logical path to "hashed" logical path.  This object is what the command-line tool outputs to `map.json`. Only call this after finding/compiling assets.
  - `getRequiredLogicalPathsFor(asset)` - Get the logical paths of the assets that should be merged into the specified asset (populated for `.mf` files). Only call this after finding/compiling assets.
  - `getProcessingOrderLogicalPaths()` - Get a list of the order in which assets should be processed in order to satisfy all dependencies. Only call this after finding/compiling assets.
+ - `reset()` - Reset the asset metadata.
 
-The `Asset` object returned by `getAssetByLogicalPath` has the following properties:
+The `Asset` object returned by `getAssetByLogicalPath` has the following properties (and one method):
+
  - `logicalPath` - The logical path
  - `hashedPath` - If `hash` is true, the hashed filename path, otherwise the same as `logicalPath`
  - `assetFilePath` - The full path to the actual source asset
  - `compiled` - Whether the asset has been compiled
  - `compiledAssetFilePath` - The full path to the compiled asset file
+ - `reset()` - Set the asset back to its before-compile state (clear out contents, set name back to pre-transform name)
 
 **Example**
 
