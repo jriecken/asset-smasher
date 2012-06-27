@@ -1,5 +1,10 @@
 # Asset Smasher Changelog
 
+## 0.1.2 (June 27, 2012)
+
+- Update package dependencies to ones that work with 0.8
+- Still using deprecated path.exists to avoid breaking 0.6 compatibility
+
 ## 0.1.1 (June 12, 2012)
 
 - Fix issue where assets could get processed multiple times when calling `compileSingleAsset`.  When calling `compileSingleAsset`, an asset will not be recompiled if it has already been compiled.  If it hasn't been compiled, any `require`d assets will be recompiled even if they've been compiled already.
