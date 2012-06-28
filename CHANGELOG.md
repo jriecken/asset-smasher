@@ -1,5 +1,9 @@
 # Asset Smasher Changelog
 
+## 0.1.3 (June 28, 2012)
+
+- Use the right version of "exists" (fs.exists || path.exists) to get rid of deprecation warning messages
+
 ## 0.1.2 (June 27, 2012)
 
 - Update package dependencies to ones that work with 0.8
