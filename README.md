@@ -247,7 +247,8 @@ The middleware takes in the same arguments as the `Smasher` constructor, with a 
 The middleware exposes two helpers to your views:
 
 - `js_asset(logicalPath)` - Render a `<script>` tag for the specified JS asset. When `serve` is true, this will "explode" manifests and write out a separate `<script>` for each required file.  This makes debugging much easier.
-- `css_asset(logicalPath)` - Render a `<link>` tag for the specified CSS asset.  Same thing happens when `serve` is true.
+- `css_asset(logicalPath)` - Render a `<link>` tag for the specified CSS asset.  Same thing happens when `serve` is true as with `js_asset`.
+- `raw_asset(logicalPath)` - Return the path to the asset.
 
 ### Example
 

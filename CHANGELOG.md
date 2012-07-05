@@ -1,5 +1,9 @@
 # Asset Smasher Changelog
 
+## 0.1.4 (July 5, 2012)
+
+- Add a `raw_asset` helper function to the middleware that returns the asset URL
+
 ## 0.1.3 (June 28, 2012)
 
 - Use the right version of "exists" (fs.exists || path.exists) to get rid of deprecation warning messages
