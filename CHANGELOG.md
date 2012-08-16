@@ -1,5 +1,10 @@
 # Asset Smasher Changelog
 
+## 0.2.0 (August 15, 2012)
+
+- Add a transformer for Stylus `.styl` files (Fixes #2)
+- Document how to plug in additional transformers.
+
 ## 0.1.4 (July 5, 2012)
 
 - Add a `raw_asset` helper function to the middleware that returns the asset URL

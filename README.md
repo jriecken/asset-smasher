@@ -10,7 +10,7 @@ Asset pre-processor, merger, and compressor for Node.js
 - [Using via Express Middleware](#express-middleware)
 - [Using via Programmatic Interface](#programmatic-interface)
 - [Transformer Notes](#transformer-notes)
-    - [LESS](#tn-less)
+    - [LESS/Stylus](#tn-less-styl)
     - [ejs](#tn-ejs)
     - [dust and Handlebars](#tn-dust-hbs)
 
@@ -22,6 +22,7 @@ Asset Smasher is a command-line tool, express middleware, and programmatic inter
     - `.coffee` - Compile CoffeeScript into JavaScript
     - `.ejs` - Run a file through EJS (e.g. to populate configuration parameters into a JavaScript file)
     - `.less` - Compile Less into CSS
+    - `.styl` - Compile Stylus into CSS
     - `.hbs` - Precompile Handlebars templates into JavaScript files that register them with `Handlebars.templates`.
     - `.dust` - Precompile Dust templates into JavaScript files that register them for use with `dust.render`.
     - Processors can be chained together.  E.g `test.js.hbs.ejs` (run Handlebars template through EJS, then compile it)
@@ -191,8 +192,8 @@ Use `npm install -g asset-smasher` to install the `asset-smasher` command-line t
 
           Something similar to what the Rails asset pipeline does by default
 
-            $ asset-smasher --compress --hash --gzip --prefix=/assets \
-                --paths=./js,./css,./images \
+            $ asset-smasher --compress --hash --gzip --prefix /assets \
+                --paths ./js,./css,./images \
                 --only **/*.{jpg,gif,png},application.js.mf,application.css.mf ./public/assets
 
           Compile assets, providing some custom helpers to the transformation
@@ -230,7 +231,49 @@ You can use this, for example, to set configuration parameters in your JS files:
 
 If there's a type of file you want to pre-process that is not natively supported by Asset Smasher, you can add it using a plugin file.
 
-*TODO: How to add additional transformers via a plugin file.*
+For an example of what the transformer classes look like, look in the `lib/compilation/transforms` directory
+
+If a plugin module is passed (via `--plugins`), it will be `require()`d and then invoked, being passed in the asset smasher library (the module defined in `lib/asset-smasher.js`)
+
+To register your transformer, just add another entry to the `transforms` object.
+
+E.g.
+
+**my_plugin.js**
+
+    module.exports = function(assetSmasher) {
+       // A stupid transformer that adds "foo" to the start and end of the contents
+       var FooTransform = function FooTransform(options) {
+         this.options = options || {};
+       };
+       FooTransform.prototype = {
+         extensions:function () {
+           return ['.foo'];
+         },
+         shouldTransform:function (file) {
+           return path.extname(file) === '.foo';
+         },
+         transformedFileName:function (file) {
+           return path.basename(file, '.foo');
+         },
+         transform:function (asset, cb) {
+           // Transform the file name
+           asset.logicalName = this.transformedFileName(asset.logicalName);
+           // Get the contents
+           var contents = asset.contents;
+           if (Buffer.isBuffer(contents)) {
+             contents = contents.toString('utf-8');
+           }
+           // Compile the contents
+           asset.contents = 'foo-' + contents + '-foo';
+           cb();
+         }
+       };
+
+       assetSmasher.transforms.Foo = FooTransform;
+    };
+
+If you then invoke `asset-smasher` with `--plugins my_plugin.js` it will automatically transform `*.foo` files.
 
 ## <a name="express-middleware"></a> Using via Express Middleware
 
@@ -341,11 +384,11 @@ The `Asset` object returned by `getAssetByLogicalPath` has the following propert
 
 ## <a name="transformer-notes"></a> Transformer Notes
 
-### <a name="tn-less"></a> LESS
+### <a name="tn-less-styl"></a> LESS/Styles
 
-- When the `compress` option is true, the compression is done directly via the `less` compiler
-- Any `@include` paths are *relative to the path that the file is in*.
-- Any `@include`d files will *not* be processed individually by Asset Smasher (i.e. you can't `@include` a LESS file that is preprocessed by ejs)
+- When the `compress` option is true, the compression is done directly via the `less/stylus` compilers
+- Any `@include/@import` paths are *relative to the path that the file is in*.
+- Any `@include/@import`ed files will *not* be processed individually by Asset Smasher (i.e. you can't `@include` a LESS file that is preprocessed by ejs)
 
 ### <a name="tn-ejs"></a> ejs
 
