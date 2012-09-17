@@ -1,5 +1,9 @@
 # Asset Smasher Changelog
 
+## 0.2.1 (September 17, 2012)
+
+- Allow the `asset_src` helper to work with assets whose names have been transformed.
+
 ## 0.2.0 (August 15, 2012)
 
 - Add a transformer for Stylus `.styl` files (Fixes #2)
