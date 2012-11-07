@@ -1,5 +1,9 @@
 # Asset Smasher Changelog
 
+## 0.2.2 (November 7, 2012)
+
+- Ensure that concurrent requests for assets are correctly compiled by the connect middleware (Fixes #5)
+
 ## 0.2.1 (September 17, 2012)
 
 - Allow the `asset_src` helper to work with assets whose names have been transformed.
