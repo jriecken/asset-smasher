@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/jriecken/asset-smasher.png)](http://travis-ci.org/jriecken/asset-smasher)
 # Asset Smasher
 
 Asset pre-processor, merger, and compressor for Node.js
