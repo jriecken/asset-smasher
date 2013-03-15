@@ -1,5 +1,11 @@
 # Asset Smasher Changelog
 
+## 0.2.3 (March 14, 2013)
+
+- Use the `send` module rather than the internals of connect's static middleware. (Fixes #6)
+- Minify all CSS (not just CSS generated from LESS/stylus) using the `ycssmin` module. (Fixes #4)
+- Update to latest versions of dependencies.
+
 ## 0.2.2 (November 7, 2012)
 
 - Ensure that concurrent requests for assets are correctly compiled by the connect middleware (Fixes #5)
