@@ -25,7 +25,7 @@
     "asset-smasher": "./bin/asset-smasher"
   },
   "dependencies": {
-    "async": "0.1.22",
+    "async": "0.2.6",
     "commander": "0.6.1",
     "glob": "3.1.10",
     "mkdirp": "0.3.3",
