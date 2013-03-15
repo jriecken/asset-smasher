@@ -32,7 +32,8 @@
     "minimatch": "0.2.11",
     "send":"0.1.0",
     "uglify-js": "2.2.5",
-    "underscore": "1.4.4"
+    "underscore": "1.4.4",
+    "ycssmin":"1.0.1"
   },
   "optionalDependencies": {},
   "devDependencies": {},

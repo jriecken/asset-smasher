@@ -33,7 +33,7 @@ Asset Smasher is a command-line tool, express middleware, and programmatic inter
     - `require_tree` - Require all the files in a specific directory (and subdirectories)
 - Compressing, gzipping, and generating hashed file names.
     - Compress JavaScript files with `uglify-js`
-    - Compress LESS during LESS preprocessing
+    - Compress CSS files with `ycssmin`
     - Generate Gzipped versions of files
     - Include a MD5 hash of the file's contents in the file name. `myAsset.js` -> `myAsset-c89cba7b7df028e65cb01d86f4d27077.js`
         - `asset_path` helper that can be used to reference the hashed name.
@@ -386,7 +386,6 @@ The `Asset` object returned by `getAssetByLogicalPath` has the following propert
 
 ### <a name="tn-less-styl"></a> LESS/Styles
 
-- When the `compress` option is true, the compression is done directly via the `less/stylus` compilers
 - Any `@include/@import` paths are *relative to the path that the file is in*.
 - Any `@include/@import`ed files will *not* be processed individually by Asset Smasher (i.e. you can't `@include` a LESS file that is preprocessed by ejs)
 
