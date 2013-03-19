@@ -406,7 +406,7 @@ The `Asset` object returned by `getAssetByLogicalPath` has the following propert
 
 ## <a name="transformer-notes"></a> Transformer Notes
 
-### <a name="tn-less-styl"></a> LESS/Styles
+### <a name="tn-less-styl"></a> LESS/Stylus
 
 - Any `@include/@import` paths are *relative to the path that the file is in*.
 - Any `@include/@import`ed files will *not* be processed individually by Asset Smasher (i.e. you can't `@include` a LESS file that is preprocessed by ejs)
