@@ -1,5 +1,9 @@
 # Asset Smasher Changelog
 
+## 0.2.5 (March 18, 2013)
+
+- Stop starving the event loop during `async.eachSync` calls. Fixes compatibilty with node `0.10.x`. (Fixes #8)
+
 ## 0.2.4 (March 16, 2013)
 
 - Allow more fine-grained control over the `serve` option of the middleware (e.g. serving merged files instead of individual ones). See alternate production config in `README.md` for usage. (Fixes #7)
