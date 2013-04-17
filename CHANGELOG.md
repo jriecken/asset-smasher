@@ -1,5 +1,9 @@
 # Asset Smasher Changelog
 
+## 0.2.6 (April 17, 2013)
+
+- Limit the number of files to process in parallel to avoid EMFILE. (Fixes #9)
+
 ## 0.2.5 (March 18, 2013)
 
 - Stop starving the event loop during `async.eachSync` calls. Fixes compatibilty with node `0.10.x`. (Fixes #8)
