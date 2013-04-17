@@ -1,5 +1,9 @@
 # Asset Smasher Changelog
 
+## 0.2.7 (April 17, 2013)
+
+- Use async.eachLimit to avoid EMFILE in asset output. (Fixes #10)
+
 ## 0.2.6 (April 17, 2013)
 
 - Limit the number of files to process in parallel to avoid EMFILE. (Fixes #9)
