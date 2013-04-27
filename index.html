@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Asset-smasher : Asset pre-processor, merger, and compressor for Node.js" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Asset-smasher</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/jriecken/asset-smasher">View on GitHub</a>
+
+          <h1 id="project_title">Asset-smasher</h1>
+          <h2 id="project_tagline">Asset pre-processor, merger, and compressor for Node.js</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/jriecken/asset-smasher/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/jriecken/asset-smasher/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>Asset Smasher</h1>
+
+<p>Asset pre-processor, merger, and compressor for Node.js</p>
+
+<ul>
+<li>
+<a href="#structure-assets">Structuring Your Assets</a>
+
+<ul>
+<li><a href="#manifest-files">Manifest Files</a></li>
+</ul>
+</li>
+<li>
+<a href="#command-line">Using via Command Line</a>
+
+<ul>
+<li><a href="#cli-helpers">Helpers</a></li>
+<li><a href="#cli-plugins">Plugins</a></li>
+</ul>
+</li>
+<li><a href="#express-middleware">Using via Express Middleware</a></li>
+<li><a href="#programmatic-interface">Using via Programmatic Interface</a></li>
+<li>
+<a href="#transformer-notes">Transformer Notes</a>
+
+<ul>
+<li><a href="#tn-less-styl">LESS/Stylus</a></li>
+<li><a href="#tn-ejs">ejs</a></li>
+<li><a href="#tn-dust-hbs">dust and Handlebars</a></li>
+</ul>
+</li>
+</ul><h2>Overview</h2>
+
+<p>Asset Smasher is a command-line tool, express middleware, and programmatic interface for:</p>
+
+<ul>
+<li>Pre-processing and transforming files down to plain JavaScript and CSS.
+
+<ul>
+<li>
+<code>.coffee</code> - Compile CoffeeScript into JavaScript</li>
+<li>
+<code>.ejs</code> - Run a file through EJS (e.g. to populate configuration parameters into a JavaScript file)</li>
+<li>
+<code>.less</code> - Compile Less into CSS</li>
+<li>
+<code>.styl</code> - Compile Stylus into CSS</li>
+<li>
+<code>.hbs</code> - Precompile Handlebars templates into JavaScript files that register them with <code>Handlebars.templates</code>.</li>
+<li>
+<code>.dust</code> - Precompile Dust templates into JavaScript files that register them for use with <code>dust.render</code>.</li>
+<li>Processors can be chained together.  E.g <code>test.js.hbs.ejs</code> (run Handlebars template through EJS, then compile it)</li>
+<li>Additional processors can be plugged in.</li>
+</ul>
+</li>
+<li>Merging files together using Manifest files (<code>.mf</code>) with dependency management directives similar to Sprockets.
+
+<ul>
+<li>
+<code>require</code> - Require a single file</li>
+<li>
+<code>require_dir</code> - Require all the files in a specific directory</li>
+<li>
+<code>require_tree</code> - Require all the files in a specific directory (and subdirectories)</li>
+</ul>
+</li>
+<li>Compressing, gzipping, and generating hashed file names.
+
+<ul>
+<li>Compress JavaScript files with <code>uglify-js</code>
+</li>
+<li>Compress CSS files with <code>ycssmin</code>
+</li>
+<li>Generate Gzipped versions of files</li>
+<li>Include a MD5 hash of the file's contents in the file name. <code>myAsset.js</code> -&gt; <code>myAsset-c89cba7b7df028e65cb01d86f4d27077.js</code>
+
+<ul>
+<li>
+<code>asset_path</code> helper that can be used to reference the hashed name.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><p>It's released under the <a href="http://en.wikipedia.org/wiki/MIT_License">MIT</a> license.</p>
+
+<h2>
+<a name="structure-assets"></a> Structuring Your Assets</h2>
+
+<p>Asset Smasher has the concept of "asset paths".  These are locations in which your asset files will be located, and from which any relative asset paths will be rooted to.</p>
+
+<p>The simplest structure has one asset path.</p>
+
+<p>E.g.</p>
+
+<pre><code>Asset Paths
+-----------
+ - app
+
+File Structure
+--------------
+app/
+  js/
+  css/
+  images/
+</code></pre>
+
+<p>A more complicated structure might be</p>
+
+<pre><code>Asset Paths
+-----------
+ - app
+ - lib
+ - vendor
+
+File Structure
+--------------
+app/
+  js/
+  css/
+  images/
+lib/
+  js/
+  css/
+  images/
+vendor/
+  js/
+  css/
+  images/
+</code></pre>
+
+<p>Both of these examples will result in a compiled structure of</p>
+
+<pre><code>js/
+css/
+images/
+</code></pre>
+
+<h3>
+<a name="manifest-files"></a> Manifest Files</h3>
+
+<p>Manifest (<code>.mf</code>) files are used to merge many assets into a single resulting file. The file should be named with the resulting file type before the <code>.mf</code> extension (e.g. <code>manifest.css.mf</code> or <code>manifest.js.mf</code>. <em>Manifest files can <code>require</code> other manifest files</em></p>
+
+<p>A simple manifest file might look like</p>
+
+<pre><code># A comment here
+require "./one.js"
+require_dir "./subdir1"
+#
+# Another comment
+require_tree "./subdir2"
+</code></pre>
+
+<p><strong>Directives:</strong></p>
+
+<table border="1" cellpadding="5" cellspacing="0" width="100%">
+<tr>
+<th width="15%">Directive</th>
+<th width="85%">Description</th>
+</tr>
+<tr>
+<td><code>require "[path]"</code></td>
+    <td>
+      <strong>Include a single file</strong>
+      <ul>
+<li>
+         If the path starts with <code>"/"</code>, <code>"../"</code>, or <code>"./"</code>, process and include the specified file.  The file <em>must</em> be
+         inside one of the configured asset paths.
+       </li>
+       <li>
+         If the path does not start with <code>"/"</code>, <code>"../"</code>, or <code>"./"</code>, the file will be searched for in all of the configured
+         asset paths.  E.g. if there are asset paths <code>one</code> and <code>two</code> defined, <code>require "js/test.js"</code>
+         will look for <code>one/js/test.js</code> and then <code>two/js/test.js</code> stopping when it finds a matching file.
+       </li>
+       <li>
+         The filename part of the path does not have to include the whole extension.  E.g <code>require "test"</code>
+         finds the first file that matches the name in the asset paths (for example <code>test.js.ejs</code>)
+       </li>
+      </ul>
+</td>
+  </tr>
+<tr>
+<td><code>require_dir "[path]"</code></td>
+    <td>
+      <strong>Include all the files in a directory</strong>
+      <ul>
+<li>
+         The path must be absolute, or relative to the current directory.  E.g. you can do <code>require_dir "../some/other/dir"</code>
+         but not <code>require_dir "somedir"</code>
+       </li>
+       <li>
+         If using absolute paths, or <code>".."</code> in your paths, the resulting directory needs to be inside one of the configured asset paths.
+       </li>
+       <li>
+         Make sure the directory only contains assets of the type you want.  E.g. for <code>myManifest.js.mf</code>, the dir required had better
+         only contain javascript files, or else bad things will happen.
+       </li>
+      </ul>
+</td>
+  </tr>
+<tr>
+<td><code>require_tree "[path]"</code></td>
+    <td>
+      <strong>Include the files in a directory recursively</strong>
+      <ul>
+<li>The rules for <code>require_tree</code> are the same as the rules for <code>require_dir</code>
+</li>
+      </ul>
+</td>
+  </tr>
+</table><h2>
+<a name="command-line"></a> Using via Command-Line</h2>
+
+<p>Use <code>npm install -g asset-smasher</code> to install the <code>asset-smasher</code> command-line tool globally.</p>
+
+<pre><code>  asset-smasher --help
+
+    Usage: asset-smasher [options] &lt;output dir&gt;
+
+    Options:
+
+      -h, --help               output usage information
+      -V, --version            output the version number
+      --compress               compress/minify the generated files
+      --hash                   generate versions of the files with md5 hashes in the name
+      --gzip                   generate gzipped versions of the compiled files
+      --hashVersion &lt;version&gt;  invalidate all assets without changing file contents [1.0]
+      --only &lt;pattern,...&gt;     only process the files matching these glob patterns (relative to any of the paths) [**/*]
+      --paths &lt;path,...&gt;       list of paths to look for assets [.]
+      --prefix &lt;prefix&gt;        prefix to append to logical paths when constructing urls. use if output dir is not served from the root of your web app []
+      --helpers &lt;js_file&gt;      a .js module of helper functions require()s to expose to transforms []
+      --plugins &lt;js_file&gt;      a .js plugin module []
+
+    If --only is not specified, *all* files in the --paths will be processed.
+
+    Examples:
+
+      Compile all assets in the current directory to /home/me/compiledAssets
+
+        $ asset-smasher /home/me/compiledAssets
+
+      Something similar to what the Rails asset pipeline does by default
+
+        $ asset-smasher --compress --hash --gzip --prefix /assets \
+            --paths ./js,./css,./images \
+            --only **/*.{jpg,gif,png},application.js.mf,application.css.mf ./public/assets
+
+      Compile assets, providing some custom helpers to the transformation
+
+        $ asset-smasher --helpers helpers.js output
+</code></pre>
+
+<h3>
+<a name="cli-helpers"></a> Helpers</h3>
+
+<p>There is a built-in <code>asset_path</code> helper that can be used to get the "real" (i.e. with hashed file name) path of an asset.  E.g. <code>asset_path('css/myFile.css')</code> might return <code>'/assets/css/myFile-c89cba7b7df028e65cb01d86f4d27077.css</code>.</p>
+
+<p>Some transformers (e.g. the <code>.ejs</code> one) take in a set of local variables that they can use during transformation. You can pass in the path to a JavaScript module whose exports will be included in this set of variables.</p>
+
+<p>You can use this, for example, to set configuration parameters in your JS files:</p>
+
+<p><strong>helper.js</strong></p>
+
+<pre><code>exports.serviceUrl = 'http://my.service/';
+</code></pre>
+
+<p><strong>config.js.ejs</strong></p>
+
+<pre><code>//...
+var serviceUrl = '&lt;%= serviceUrl %&gt;';
+var cssLocation = '&lt;%= asset_path('css/myFile.css') %&gt;';
+//...
+</code></pre>
+
+<p><strong>Execution</strong></p>
+
+<pre><code>$ asset-smasher --helpers helper.js --only config.js.ejs,css/myFile.css .
+$ cat config.js
+var serviceUrl = 'http://my.service/';
+var cssLocation = '/assets/css/myFile-c89cba7b7df028e65cb01d86f4d27077.css';
+</code></pre>
+
+<h3>
+<a name="cli-plugins"></a> Plugins</h3>
+
+<p>If there's a type of file you want to pre-process that is not natively supported by Asset Smasher, you can add it using a plugin file.</p>
+
+<p>For an example of what the transformer classes look like, look in the <code>lib/compilation/transforms</code> directory</p>
+
+<p>If a plugin module is passed (via <code>--plugins</code>), it will be <code>require()</code>d and then invoked, being passed in the asset smasher library (the module defined in <code>lib/asset-smasher.js</code>)</p>
+
+<p>To register your transformer, just add another entry to the <code>transforms</code> object.</p>
+
+<p>E.g.</p>
+
+<p><strong>my_plugin.js</strong></p>
+
+<pre><code>module.exports = function(assetSmasher) {
+   // A stupid transformer that adds "foo" to the start and end of the contents
+   var FooTransform = function FooTransform(options) {
+     this.options = options || {};
+   };
+   FooTransform.prototype = {
+     extensions:function () {
+       return ['.foo'];
+     },
+     shouldTransform:function (file) {
+       return path.extname(file) === '.foo';
+     },
+     transformedFileName:function (file) {
+       return path.basename(file, '.foo');
+     },
+     transform:function (asset, cb) {
+       // Transform the file name
+       asset.logicalName = this.transformedFileName(asset.logicalName);
+       // Get the contents
+       var contents = asset.contents;
+       if (Buffer.isBuffer(contents)) {
+         contents = contents.toString('utf-8');
+       }
+       // Compile the contents
+       asset.contents = 'foo-' + contents + '-foo';
+       cb();
+     }
+   };
+
+   assetSmasher.transforms.Foo = FooTransform;
+};
+</code></pre>
+
+<p>If you then invoke <code>asset-smasher</code> with <code>--plugins my_plugin.js</code> it will automatically transform <code>*.foo</code> files.</p>
+
+<h2>
+<a name="express-middleware"></a> Using via Express Middleware</h2>
+
+<p>Asset smasher exposes an <code>express</code> middleware that can:</p>
+
+<ul>
+<li>Serve your assets un-merged/mangled in development mode.</li>
+<li>Serve precompiled assets (with hashed file names) in production mode.</li>
+</ul><p>The middleware takes in the same arguments as the <code>Smasher</code> constructor, with a few extras:</p>
+
+<ul>
+<li>
+<code>serve</code> - boolean (or object - see more below) indiacating whether the middleware should serve the asset files.  Usualy set this to <code>true</code> in development, <code>false</code> in production (e.g if you're using precompiled assets)
+
+<ul>
+<li>An object can be passed in with the following properties to control the serving behavior. If <code>true</code> is passed in, the default values here will be used
+
+<ul>
+<li>
+<code>individual</code> - Whether the individual (<code>true</code>) or merged files (<code>false</code>) should be served. Default <code>true</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<code>assetMapLocation</code> - path to the <code>map.json</code> generated by the command-line <code>asset-smasher</code> util.  This allows the helper methods to determine what the hashed file names were</li>
+</ul><p>The middleware exposes two helpers to your views:</p>
+
+<ul>
+<li>
+<code>js_asset(logicalPath)</code> - Render a <code>&lt;script&gt;</code> tag for the specified JS asset. When <code>serve</code> is true, this will "explode" manifests and write out a separate <code>&lt;script&gt;</code> for each required file.  This makes debugging much easier.</li>
+<li>
+<code>css_asset(logicalPath)</code> - Render a <code>&lt;link&gt;</code> tag for the specified CSS asset.  Same thing happens when <code>serve</code> is true as with <code>js_asset</code>.</li>
+<li>
+<code>raw_asset(logicalPath)</code> - Return the path to the asset.</li>
+</ul><h3>Example</h3>
+
+<pre><code>var assetSmasher = require('asset-smasher');
+</code></pre>
+
+<p><strong>Middleware config (Dev)</strong></p>
+
+<pre><code>app.use(assetSmasher.middleware({
+  serve: true,
+  paths: [path.join(__dirname, 'assetDir1'), path.join(__dirname, 'assetDir2')],
+  prefix: '/assets',
+  outputTo: path.join(__dirname, 'tmp')
+}));
+</code></pre>
+
+<p><strong>Middleware config (Prod)</strong></p>
+
+<pre><code>app.use(assetSmasher.middleware({
+  serve: false,
+  prefix: '/assets',
+  assetMapLocation: path.join(__dirname, 'public/assets/map.json')
+}));
+</code></pre>
+
+<p><strong>Middleware config (Alternate Prod config not using precompilation, but instead compile on first access)</strong></p>
+
+<p>Note that if you use this configuration, you will <strong>not</strong> be able to use "hashed" filenames.</p>
+
+<pre><code>app.use(express.staticCache());
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(assetSmasher.middleware({
+  serve: {
+    individual: false
+  },
+  paths: [path.join(__dirname, 'assetDir1'), path.join(__dirname, 'assetDir2')],
+  compress: true,
+  prefix: '/assets',
+  // This will make the files be served once by asset smasher
+  // and then by the express "static" middleware thereafter.
+  // You can then also use something like "staticCache" to cache the files if you're not
+  // using a reverse proxy cache on the public dir
+  outputTo: path.join(__dirname, 'public/assets')
+}));
+</code></pre>
+
+<p><strong>View (ejs here, but could be others)</strong></p>
+
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;title&gt;Test&lt;/title&gt;
+  &lt;%- css_asset('application.css') %&gt;
+  &lt;%- js_asset('application.js') %&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  This is a test
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+
+<h2>
+<a name="programmatic-interface"></a> Using via Programmatic Interface</h2>
+
+<p>You can invoke Asset Smasher programmatically by <code>require</code>ing it.  You can also plug in additional transformers this way.</p>
+
+<p>The <code>Smasher</code> object has the following methods:</p>
+
+<ul>
+<li>
+<code>compileAssets(cb)</code> - Find and compile all the assets.</li>
+<li>
+<code>compileSingleAsset(assetFilePath, cb)</code> - Compile a single asset (assetFilePath is the actual path to the file, not a logical path)</li>
+<li>
+<code>findAssets(cb)</code> - Find, but don't compile the assets.  Good for determining dependency graph without compiling.</li>
+<li>
+<code>getAssetByLogicalPath(logicalPath)</code> - Get information about an asset by its logical path.  Only call this after finding/compiling assets.</li>
+<li>
+<code>getHashedFileMapping()</code> - When <code>hash</code> is true, this returns a mapping of logical path to "hashed" logical path.  This object is what the command-line tool outputs to <code>map.json</code>. Only call this after finding/compiling assets.</li>
+<li>
+<code>getRequiredLogicalPathsFor(asset)</code> - Get the logical paths of the assets that should be merged into the specified asset (populated for <code>.mf</code> files). Only call this after finding/compiling assets.</li>
+<li>
+<code>getProcessingOrderLogicalPaths()</code> - Get a list of the order in which assets should be processed in order to satisfy all dependencies. Only call this after finding/compiling assets.</li>
+<li>
+<code>reset()</code> - Reset the asset metadata.</li>
+</ul><p>The <code>Asset</code> object returned by <code>getAssetByLogicalPath</code> has the following properties (and one method):</p>
+
+<ul>
+<li>
+<code>logicalPath</code> - The logical path</li>
+<li>
+<code>hashedPath</code> - If <code>hash</code> is true, the hashed filename path, otherwise the same as <code>logicalPath</code>
+</li>
+<li>
+<code>assetFilePath</code> - The full path to the actual source asset</li>
+<li>
+<code>compiled</code> - Whether the asset has been compiled</li>
+<li>
+<code>compiledAssetFilePath</code> - The full path to the compiled asset file</li>
+<li>
+<code>reset()</code> - Set the asset back to its before-compile state (clear out contents, set name back to pre-transform name)</li>
+</ul><p><strong>Example</strong></p>
+
+<pre><code>var assetSmasher = require('asset-smasher');
+var Smasher = assetSmasher.Smasher;
+
+// Plug in a custom transformer
+assetSmasher.transforms['MyAwesomeFormat'] = require('myAwesomeFormatTransformer');
+
+var sm = new Smasher({
+  paths:['/path/one', '/path/two'],
+  only:['**/*.{jpg,gif,png}', 'application.js.mf', 'application.css.mf'],
+  prefix:'/assets',
+  compress:true,
+  hash:true,
+  hashVersion:'1.0',
+  gzip:true,
+  outputTo:__dirname + '/public/assets',
+  helpers:{
+   my: 'helper',
+   another: 'helper'
+  }
+});
+sm.compileAssets(function(err) {
+  if(err) {
+    console.log('An error occurred', err);
+  } else {
+    console.log('Compilation done!');
+  }
+});
+</code></pre>
+
+<h2>
+<a name="transformer-notes"></a> Transformer Notes</h2>
+
+<h3>
+<a name="tn-less-styl"></a> LESS/Stylus</h3>
+
+<ul>
+<li>Any <code>@include/@import</code> paths are <em>relative to the path that the file is in</em>.</li>
+<li>Any <code>@include/@import</code>ed files will <em>not</em> be processed individually by Asset Smasher (i.e. you can't <code>@include</code> a LESS file that is preprocessed by ejs)</li>
+</ul><h3>
+<a name="tn-ejs"></a> ejs</h3>
+
+<ul>
+<li>Any registered helpers will be exposed as global variables to the <code>ejs</code> transform.</li>
+<li>The built-in <code>asset_paths</code> helper can be used here.</li>
+</ul><h3>
+<a name="tn-dust-hbs"></a> dust and Handlebars</h3>
+
+<ul>
+<li>The name of the template will be the template's "logical path" (minus the asset path it is in), minus the <code>.js.dust</code> or <code>.js.hbs</code> file extension.
+
+<ul>
+<li>E.g. <code>/my/templates/test.js.dust</code>'s template name will be <code>test</code> (assuming <code>/my/templates</code> is the asset path)</li>
+</ul>
+</li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Asset-smasher maintained by <a href="https://github.com/jriecken">jriecken</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
