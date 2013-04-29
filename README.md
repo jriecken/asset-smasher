@@ -4,6 +4,7 @@ Asset pre-processor, merger, and compressor for Node.js
 
 - [Structuring Your Assets](#structure-assets)
     - [Manifest Files](#manifest-files)
+    - [Manifest Directories](#manifest-directories)
 - [Using via Command Line](#command-line)
     - [Helpers](#cli-helpers)
     - [Plugins](#cli-plugins)
@@ -159,6 +160,12 @@ A simple manifest file might look like
   </tr>
  </tbody>
 </table>
+
+### <a name="manifest-directories"></a> Manifest Directories
+
+If you create a directory, for example named `foo.js.mf` and put a bunch of javascript files in it (or any subdirectories under it), `asset-smasher` will (recursively) take all the files inside and merge them into `foo.js`.
+
+Essentially, this is a time-saver so that you don't have to create a manifest file that only contains a single `require_tree` directive.
 
 ## <a name="command-line"></a> Using via Command-Line
 
