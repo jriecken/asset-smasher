@@ -41,6 +41,7 @@
 
 <ul>
 <li><a href="#manifest-files">Manifest Files</a></li>
+<li><a href="#manifest-directories">Manifest Directories</a></li>
 </ul>
 </li>
 <li>
@@ -240,7 +241,14 @@ require_tree "./subdir2"
       </ul>
 </td>
   </tr>
-</table><h2>
+</table><h3>
+<a name="manifest-directories"></a> Manifest Directories</h3>
+
+<p>If you create a directory, for example named <code>foo.js.mf</code> and put a bunch of javascript files in it (or any subdirectories under it), <code>asset-smasher</code> will (recursively) take all the files inside and merge them into <code>foo.js</code>.</p>
+
+<p>Essentially, this is a time-saver so that you don't have to create a manifest file that only contains a single <code>require_tree</code> directive.</p>
+
+<h2>
 <a name="command-line"></a> Using via Command-Line</h2>
 
 <p>Use <code>npm install -g asset-smasher</code> to install the <code>asset-smasher</code> command-line tool globally.</p>
