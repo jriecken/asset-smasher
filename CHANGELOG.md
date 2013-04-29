@@ -1,5 +1,9 @@
 # Asset Smasher Changelog
 
+## 0.2.8 (April 28, 2013)
+
+- Allow 'manifest directories' to be created. If a directory name ends in '.mf' it is treated as it it were a manfiest file that does a `require_tree` on that directory. (Fixes #12)
+
 ## 0.2.7 (April 17, 2013)
 
 - Use async.eachLimit to avoid EMFILE in asset output. (Fixes #10)
