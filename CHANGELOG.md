@@ -1,5 +1,10 @@
 # Asset Smasher Changelog
 
+## 0.2.9 (April 29, 2013)
+
+- Ignore `require_dir` directive in manifest file if the required directory doesn't exist. Previously this would throw an EMFILE and was inconsistent with what `require` and `require_tree` did (which was ignore the directive). (Fixes #13)
+- Add two additional options, `--verbose` and `--noclean`. `--verbose` will log information about what's going on to the console, while `--noclean` will not delete the output directory when running the tool (by default the output directory will be cleared). (Fixes #13)
+
 ## 0.2.8 (April 28, 2013)
 
 - Allow 'manifest directories' to be created. If a directory name ends in '.mf' it is treated as it it were a manfiest file that does a `require_tree` on that directory. (Fixes #12)
