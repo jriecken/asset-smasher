@@ -302,6 +302,8 @@ The middleware exposes two helpers to your views:
 - `css_asset(logicalPath)` - Render a `<link>` tag for the specified CSS asset.  Same thing happens when `serve` is true as with `js_asset`.
 - `raw_asset(logicalPath)` - Return the path to the asset.
 
+You *must* include the middleware **before** the Express routing middleware. Otherwise the asset helper functions will not be available for your view to use.
+
 ### Example
 
     var assetSmasher = require('asset-smasher');
