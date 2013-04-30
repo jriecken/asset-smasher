@@ -174,6 +174,8 @@ images/
 
 <p>Manifest (<code>.mf</code>) files are used to merge many assets into a single resulting file. The file should be named with the resulting file type before the <code>.mf</code> extension (e.g. <code>manifest.css.mf</code> or <code>manifest.js.mf</code>. <em>Manifest files can <code>require</code> other manifest files</em></p>
 
+<p>Only files that will be transformed down to a file of a manifest's "type" (e.g. <code>manifest.css.mf</code> =&gt; <code>.css</code>, <code>manifest.js.mf</code> =&gt; <code>.js</code>) will be included. This means that, for example, if you <code>require_dir</code> a directory in a JavaScript manifest that happens to contain both JavaScript and CSS, only the JavaScript files will be required.</p>
+
 <p>A simple manifest file might look like</p>
 
 <pre><code># A comment here
@@ -209,6 +211,9 @@ require_tree "./subdir2"
          The filename part of the path does not have to include the whole extension.  E.g <code>require "test"</code>
          finds the first file that matches the name in the asset paths (for example <code>test.js.ejs</code>)
        </li>
+       <li>
+         If the file does not exist/can't be resolved/isn't of the right type for the manifest, it will be ignored (will be logged in verbose mode).
+       </li>
       </ul>
 </td>
   </tr>
@@ -225,8 +230,7 @@ require_tree "./subdir2"
          If using absolute paths, or <code>".."</code> in your paths, the resulting directory needs to be inside one of the configured asset paths.
        </li>
        <li>
-         Make sure the directory only contains assets of the type you want.  E.g. for <code>myManifest.js.mf</code>, the dir required had better
-         only contain javascript files, or else bad things will happen.
+         If the directory does not exist, it will be ignored (will be logged in verbose mode).
        </li>
       </ul>
 </td>
@@ -270,8 +274,11 @@ require_tree "./subdir2"
       --prefix &lt;prefix&gt;        prefix to append to logical paths when constructing urls. use if output dir is not served from the root of your web app []
       --helpers &lt;js_file&gt;      a .js module of helper functions require()s to expose to transforms []
       --plugins &lt;js_file&gt;      a .js plugin module []
+      --verbose                output more verbose information about what is going on to the console
+      --noclean                do not delete the output directory before generating files (by default it will be removed first)
 
     If --only is not specified, *all* files in the --paths will be processed.
+    If --hash is specified, a map.json file will be generated that maps the unmangled file name to the hashed one.
 
     Examples:
 
@@ -283,7 +290,7 @@ require_tree "./subdir2"
 
         $ asset-smasher --compress --hash --gzip --prefix /assets \
             --paths ./js,./css,./images \
-            --only **/*.{jpg,gif,png},application.js.mf,application.css.mf ./public/assets
+            --only **/*.jpg,**/*.gif,**/*.png,application.js.mf,application.css.mf ./public/assets
 
       Compile assets, providing some custom helpers to the transformation
 
@@ -405,7 +412,9 @@ var cssLocation = '/assets/css/myFile-c89cba7b7df028e65cb01d86f4d27077.css';
 <code>css_asset(logicalPath)</code> - Render a <code>&lt;link&gt;</code> tag for the specified CSS asset.  Same thing happens when <code>serve</code> is true as with <code>js_asset</code>.</li>
 <li>
 <code>raw_asset(logicalPath)</code> - Return the path to the asset.</li>
-</ul><h3>Example</h3>
+</ul><p>You <em>must</em> include the middleware <strong>before</strong> the Express routing middleware. Otherwise the asset helper functions will not be available for your view to use.</p>
+
+<h3>Example</h3>
 
 <pre><code>var assetSmasher = require('asset-smasher');
 </code></pre>
@@ -525,7 +534,9 @@ var sm = new Smasher({
   helpers:{
    my: 'helper',
    another: 'helper'
-  }
+  },
+  verbose:true,
+  noclean:true
 });
 sm.compileAssets(function(err) {
   if(err) {
