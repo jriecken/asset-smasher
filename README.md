@@ -127,6 +127,9 @@ A simple manifest file might look like
          The filename part of the path does not have to include the whole extension.  E.g <code>require "test"</code>
          finds the first file that matches the name in the asset paths (for example <code>test.js.ejs</code>)
        </li>
+       <li>
+         If the file does not exist/can't be resolved, it will be ignored (will be logged in verbose mode).
+       </li>
       </ul>
     </td>
   </tr>
@@ -145,6 +148,9 @@ A simple manifest file might look like
        <li>
          Make sure the directory only contains assets of the type you want.  E.g. for <code>myManifest.js.mf</code>, the dir required had better
          only contain javascript files, or else bad things will happen.
+       </li>
+       <li>
+         If the directory does not exist, it will be ignored (will be logged in verbose mode).
        </li>
       </ul>
     </td>
@@ -188,8 +194,11 @@ Use `npm install -g asset-smasher` to install the `asset-smasher` command-line t
           --prefix <prefix>        prefix to append to logical paths when constructing urls. use if output dir is not served from the root of your web app []
           --helpers <js_file>      a .js module of helper functions require()s to expose to transforms []
           --plugins <js_file>      a .js plugin module []
+          --verbose                output more verbose information about what is going on to the console
+          --noclean                do not delete the output directory before generating files (by default it will be removed first)
 
         If --only is not specified, *all* files in the --paths will be processed.
+        If --hash is specified, a map.json file will be generated that maps the unmangled file name to the hashed one.
 
         Examples:
 
@@ -201,7 +210,7 @@ Use `npm install -g asset-smasher` to install the `asset-smasher` command-line t
 
             $ asset-smasher --compress --hash --gzip --prefix /assets \
                 --paths ./js,./css,./images \
-                --only **/*.{jpg,gif,png},application.js.mf,application.css.mf ./public/assets
+                --only **/*.jpg,**/*.gif,**/*.png,application.js.mf,application.css.mf ./public/assets
 
           Compile assets, providing some custom helpers to the transformation
 
@@ -403,7 +412,9 @@ The `Asset` object returned by `getAssetByLogicalPath` has the following propert
       helpers:{
        my: 'helper',
        another: 'helper'
-      }
+      },
+      verbose:true,
+      noclean:true
     });
     sm.compileAssets(function(err) {
       if(err) {

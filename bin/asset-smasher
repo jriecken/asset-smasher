@@ -21,7 +21,9 @@ program.
   option('--paths <path,...>', 'list of paths to look for assets [.]', listify, [process.cwd()]).
   option('--prefix <prefix>', 'prefix to append to logical paths when constructing urls. use if output dir is not served from the root of your web app []', '').
   option('--helpers <js_file>', 'a .js module of helper functions require()s to expose to transforms []').
-  option('--plugins <js_file>', 'a .js plugin module []');
+  option('--plugins <js_file>', 'a .js plugin module []').
+  option('--verbose', 'output more verbose information about what is going on to the console').
+  option('--noclean', 'do not delete the output directory before generating files (by default it will be removed first)');
 
 program.on('--help', function() {
   console.log('  If --only is not specified, *all* files in the --paths will be processed.');
@@ -35,7 +37,7 @@ program.on('--help', function() {
   console.log();
   console.log('    Something similar to what the Rails asset pipeline does by default');
   console.log();
-  console.log('      $ asset-smasher --compress --hash --gzip --prefix=/assets \\\n          --paths=./js,./css,./images \\\n          --only **/*.{jpg,gif,png},application.js.mf,application.css.mf ./public/assets');
+  console.log('      $ asset-smasher --compress --hash --gzip --prefix=/assets \\\n          --paths=./js,./css,./images \\\n          --only **/*.jpg,**/*.gif,**/*.png,application.js.mf,application.css.mf ./public/assets');
   console.log();
   console.log('    Compile assets, providing some custom helpers to the transformation');
   console.log();
@@ -77,7 +79,9 @@ var smash = new Smasher({
   gzip:program.gzip,
   hashVersion:program.hashVersion,
   outputTo:outputTo,
-  helpers:program.helpers ? require(path.resolve(program.helpers)) : null
+  helpers:program.helpers ? require(path.resolve(program.helpers)) : null,
+  verbose:program.verbose,
+  noclean:program.noclean
 });
 var startTime = Date.now();
 smash.compileAssets(function(err) {
