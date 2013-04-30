@@ -1,5 +1,9 @@
 # Asset Smasher Changelog
 
+## 0.2.10 (April 29, 2013)
+
+- Ensure assets required by a manifest are of the right type. (Fixes #15)
+
 ## 0.2.9 (April 29, 2013)
 
 - Ignore `require_dir` directive in manifest file if the required directory doesn't exist. Previously this would throw an EMFILE and was inconsistent with what `require` and `require_tree` did (which was ignore the directive). (Fixes #13)
