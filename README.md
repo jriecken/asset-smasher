@@ -93,6 +93,8 @@ Both of these examples will result in a compiled structure of
 
 Manifest (`.mf`) files are used to merge many assets into a single resulting file. The file should be named with the resulting file type before the `.mf` extension (e.g. `manifest.css.mf` or `manifest.js.mf`. *Manifest files can `require` other manifest files*
 
+Only files that will be transformed down to a file of a manifest's "type" (e.g. `manifest.css.mf` => `.css`, `manifest.js.mf` => `.js`) will be included. This means that, for example, if you `require_dir` a directory in a JavaScript manifest that happens to contain both JavaScript and CSS, only the JavaScript files will be required.
+
 A simple manifest file might look like
 
     # A comment here
@@ -128,7 +130,7 @@ A simple manifest file might look like
          finds the first file that matches the name in the asset paths (for example <code>test.js.ejs</code>)
        </li>
        <li>
-         If the file does not exist/can't be resolved, it will be ignored (will be logged in verbose mode).
+         If the file does not exist/can't be resolved/isn't of the right type for the manifest, it will be ignored (will be logged in verbose mode).
        </li>
       </ul>
     </td>
@@ -144,10 +146,6 @@ A simple manifest file might look like
        </li>
        <li>
          If using absolute paths, or <code>".."</code> in your paths, the resulting directory needs to be inside one of the configured asset paths.
-       </li>
-       <li>
-         Make sure the directory only contains assets of the type you want.  E.g. for <code>myManifest.js.mf</code>, the dir required had better
-         only contain javascript files, or else bad things will happen.
        </li>
        <li>
          If the directory does not exist, it will be ignored (will be logged in verbose mode).
