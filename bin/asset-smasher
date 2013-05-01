@@ -29,6 +29,8 @@ program.on('--help', function() {
   console.log('  If --only is not specified, *all* files in the --paths will be processed.');
   console.log('  If --hash is specified, a map.json file will be generated that maps the unmangled file name to the hashed one.');
   console.log();
+  console.log('  Be careful that your shell doesn\'t expand glob patterns when passing them as arguments. To be safe, surround the argument with quotes.');
+  console.log();
   console.log('  Examples:');
   console.log();
   console.log('    Compile all assets in the current directory to /home/me/compiledAssets');
@@ -37,7 +39,7 @@ program.on('--help', function() {
   console.log();
   console.log('    Something similar to what the Rails asset pipeline does by default');
   console.log();
-  console.log('      $ asset-smasher --compress --hash --gzip --prefix=/assets \\\n          --paths=./js,./css,./images \\\n          --only **/*.jpg,**/*.gif,**/*.png,application.js.mf,application.css.mf ./public/assets');
+  console.log('      $ asset-smasher --compress --hash --gzip --prefix /assets \\\n          --paths ./js,./css,./images \\\n          --only "**/*.jpg,**/*.gif,**/*.png,application.js.mf,application.css.mf" ./public/assets');
   console.log();
   console.log('    Compile assets, providing some custom helpers to the transformation');
   console.log();

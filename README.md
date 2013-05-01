@@ -198,6 +198,8 @@ Use `npm install -g asset-smasher` to install the `asset-smasher` command-line t
         If --only is not specified, *all* files in the --paths will be processed.
         If --hash is specified, a map.json file will be generated that maps the unmangled file name to the hashed one.
 
+        Be careful that your shell doesn't expand glob patterns when passing them as arguments. To be safe, surround the argument with quotes.
+
         Examples:
 
           Compile all assets in the current directory to /home/me/compiledAssets
@@ -208,7 +210,7 @@ Use `npm install -g asset-smasher` to install the `asset-smasher` command-line t
 
             $ asset-smasher --compress --hash --gzip --prefix /assets \
                 --paths ./js,./css,./images \
-                --only **/*.jpg,**/*.gif,**/*.png,application.js.mf,application.css.mf ./public/assets
+                --only "**/*.jpg,**/*.gif,**/*.png,application.js.mf,application.css.mf" ./public/assets
 
           Compile assets, providing some custom helpers to the transformation
 
