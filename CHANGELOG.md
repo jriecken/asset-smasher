@@ -1,5 +1,10 @@
 # Asset Smasher Changelog
 
+## 0.2.11 (May 18, 2013)
+
+- No functional changes
+- Extract and use `dependency-graph` module.
+
 ## 0.2.10 (April 29, 2013)
 
 - Ensure assets required by a manifest are of the right type. (Fixes #15)
