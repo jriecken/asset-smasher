@@ -1,5 +1,9 @@
 # Asset Smasher Changelog
 
+## 0.2.12 (May 30, 2013)
+
+- Add a `.jsx` transformer for use with [React](http://facebook.github.io/react/)
+
 ## 0.2.11 (May 18, 2013)
 
 - No functional changes
