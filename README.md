@@ -20,10 +20,10 @@ Asset pre-processor, merger, and compressor for Node.js
 Asset Smasher is a command-line tool, express middleware, and programmatic interface for:
 
 - Pre-processing and transforming files down to plain JavaScript and CSS.
-    - `.coffee` - Compile CoffeeScript into JavaScript
-    - `.ejs` - Run a file through EJS (e.g. to populate configuration parameters into a JavaScript file)
-    - `.less` - Compile Less into CSS
-    - `.styl` - Compile Stylus into CSS
+    - `.coffee` - Compile [CoffeeScript](http://coffeescript.org/) into JavaScript
+    - `.ejs` - Run a file through [EJS](https://github.com/visionmedia/ejs) (e.g. to populate configuration parameters into a JavaScript file)
+    - `.less` - Compile [Less](http://lesscss.org/) into CSS
+    - `.styl` - Compile [Stylus](http://learnboost.github.io/stylus/) into CSS
     - `.hbs` - Precompile [Handlebars](http://handlebarsjs.com/) templates into JavaScript files that register them with `Handlebars.templates`.
     - `.dust` - Precompile [Dust](http://linkedin.github.io/dustjs/) templates into JavaScript files that register them for use with `dust.render`.
     - `.jsx` - Transform JSX files (for use with [React](http://facebook.github.io/react/)) into JavaScript files.
