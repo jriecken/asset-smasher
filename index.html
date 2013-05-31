@@ -31,7 +31,8 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h1>Asset Smasher</h1>
+        <h1>
+<a name="asset-smasher" class="anchor" href="#asset-smasher"><span class="octicon octicon-link"></span></a>Asset Smasher</h1>
 
 <p>Asset pre-processor, merger, and compressor for Node.js</p>
 
@@ -63,7 +64,8 @@
 <li><a href="#tn-dust-hbs">dust and Handlebars</a></li>
 </ul>
 </li>
-</ul><h2>Overview</h2>
+</ul><h2>
+<a name="overview" class="anchor" href="#overview"><span class="octicon octicon-link"></span></a>Overview</h2>
 
 <p>Asset Smasher is a command-line tool, express middleware, and programmatic interface for:</p>
 
@@ -72,17 +74,19 @@
 
 <ul>
 <li>
-<code>.coffee</code> - Compile CoffeeScript into JavaScript</li>
+<code>.coffee</code> - Compile <a href="http://coffeescript.org/">CoffeeScript</a> into JavaScript</li>
 <li>
-<code>.ejs</code> - Run a file through EJS (e.g. to populate configuration parameters into a JavaScript file)</li>
+<code>.ejs</code> - Run a file through <a href="https://github.com/visionmedia/ejs">EJS</a> (e.g. to populate configuration parameters into a JavaScript file)</li>
 <li>
-<code>.less</code> - Compile Less into CSS</li>
+<code>.less</code> - Compile <a href="http://lesscss.org/">Less</a> into CSS</li>
 <li>
-<code>.styl</code> - Compile Stylus into CSS</li>
+<code>.styl</code> - Compile <a href="http://learnboost.github.io/stylus/">Stylus</a> into CSS</li>
 <li>
-<code>.hbs</code> - Precompile Handlebars templates into JavaScript files that register them with <code>Handlebars.templates</code>.</li>
+<code>.hbs</code> - Precompile <a href="http://handlebarsjs.com/">Handlebars</a> templates into JavaScript files that register them with <code>Handlebars.templates</code>.</li>
 <li>
-<code>.dust</code> - Precompile Dust templates into JavaScript files that register them for use with <code>dust.render</code>.</li>
+<code>.dust</code> - Precompile <a href="http://linkedin.github.io/dustjs/">Dust</a> templates into JavaScript files that register them for use with <code>dust.render</code>.</li>
+<li>
+<code>.jsx</code> - Transform JSX files (for use with <a href="http://facebook.github.io/react/">React</a>) into JavaScript files.</li>
 <li>Processors can be chained together.  E.g <code>test.js.hbs.ejs</code> (run Handlebars template through EJS, then compile it)</li>
 <li>Additional processors can be plugged in.</li>
 </ul>
@@ -118,7 +122,7 @@
 </ul><p>It's released under the <a href="http://en.wikipedia.org/wiki/MIT_License">MIT</a> license.</p>
 
 <h2>
-<a name="structure-assets"></a> Structuring Your Assets</h2>
+<a name="-structuring-your-assets" class="anchor" href="#-structuring-your-assets"><span class="octicon octicon-link"></span></a><a name="structure-assets"></a> Structuring Your Assets</h2>
 
 <p>Asset Smasher has the concept of "asset paths".  These are locations in which your asset files will be located, and from which any relative asset paths will be rooted to.</p>
 
@@ -170,7 +174,7 @@ images/
 </code></pre>
 
 <h3>
-<a name="manifest-files"></a> Manifest Files</h3>
+<a name="-manifest-files" class="anchor" href="#-manifest-files"><span class="octicon octicon-link"></span></a><a name="manifest-files"></a> Manifest Files</h3>
 
 <p>Manifest (<code>.mf</code>) files are used to merge many assets into a single resulting file. The file should be named with the resulting file type before the <code>.mf</code> extension (e.g. <code>manifest.css.mf</code> or <code>manifest.js.mf</code>. <em>Manifest files can <code>require</code> other manifest files</em></p>
 
@@ -246,14 +250,14 @@ require_tree "./subdir2"
 </td>
   </tr>
 </table><h3>
-<a name="manifest-directories"></a> Manifest Directories</h3>
+<a name="-manifest-directories" class="anchor" href="#-manifest-directories"><span class="octicon octicon-link"></span></a><a name="manifest-directories"></a> Manifest Directories</h3>
 
 <p>If you create a directory, for example named <code>foo.js.mf</code> and put a bunch of javascript files in it (or any subdirectories under it), <code>asset-smasher</code> will (recursively) take all the files inside and merge them into <code>foo.js</code>.</p>
 
 <p>Essentially, this is a time-saver so that you don't have to create a manifest file that only contains a single <code>require_tree</code> directive.</p>
 
 <h2>
-<a name="command-line"></a> Using via Command-Line</h2>
+<a name="-using-via-command-line" class="anchor" href="#-using-via-command-line"><span class="octicon octicon-link"></span></a><a name="command-line"></a> Using via Command-Line</h2>
 
 <p>Use <code>npm install -g asset-smasher</code> to install the <code>asset-smasher</code> command-line tool globally.</p>
 
@@ -300,7 +304,7 @@ require_tree "./subdir2"
 </code></pre>
 
 <h3>
-<a name="cli-helpers"></a> Helpers</h3>
+<a name="-helpers" class="anchor" href="#-helpers"><span class="octicon octicon-link"></span></a><a name="cli-helpers"></a> Helpers</h3>
 
 <p>There is a built-in <code>asset_path</code> helper that can be used to get the "real" (i.e. with hashed file name) path of an asset.  E.g. <code>asset_path('css/myFile.css')</code> might return <code>'/assets/css/myFile-c89cba7b7df028e65cb01d86f4d27077.css</code>.</p>
 
@@ -330,7 +334,7 @@ var cssLocation = '/assets/css/myFile-c89cba7b7df028e65cb01d86f4d27077.css';
 </code></pre>
 
 <h3>
-<a name="cli-plugins"></a> Plugins</h3>
+<a name="-plugins" class="anchor" href="#-plugins"><span class="octicon octicon-link"></span></a><a name="cli-plugins"></a> Plugins</h3>
 
 <p>If there's a type of file you want to pre-process that is not natively supported by Asset Smasher, you can add it using a plugin file.</p>
 
@@ -380,7 +384,7 @@ var cssLocation = '/assets/css/myFile-c89cba7b7df028e65cb01d86f4d27077.css';
 <p>If you then invoke <code>asset-smasher</code> with <code>--plugins my_plugin.js</code> it will automatically transform <code>*.foo</code> files.</p>
 
 <h2>
-<a name="express-middleware"></a> Using via Express Middleware</h2>
+<a name="-using-via-express-middleware" class="anchor" href="#-using-via-express-middleware"><span class="octicon octicon-link"></span></a><a name="express-middleware"></a> Using via Express Middleware</h2>
 
 <p>Asset smasher exposes an <code>express</code> middleware that can:</p>
 
@@ -416,7 +420,8 @@ var cssLocation = '/assets/css/myFile-c89cba7b7df028e65cb01d86f4d27077.css';
 <code>raw_asset(logicalPath)</code> - Return the path to the asset.</li>
 </ul><p>You <em>must</em> include the middleware <strong>before</strong> the Express routing middleware. Otherwise the asset helper functions will not be available for your view to use.</p>
 
-<h3>Example</h3>
+<h3>
+<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h3>
 
 <pre><code>var assetSmasher = require('asset-smasher');
 </code></pre>
@@ -477,7 +482,7 @@ app.use(assetSmasher.middleware({
 </code></pre>
 
 <h2>
-<a name="programmatic-interface"></a> Using via Programmatic Interface</h2>
+<a name="-using-via-programmatic-interface" class="anchor" href="#-using-via-programmatic-interface"><span class="octicon octicon-link"></span></a><a name="programmatic-interface"></a> Using via Programmatic Interface</h2>
 
 <p>You can invoke Asset Smasher programmatically by <code>require</code>ing it.  You can also plug in additional transformers this way.</p>
 
@@ -550,22 +555,46 @@ sm.compileAssets(function(err) {
 </code></pre>
 
 <h2>
-<a name="transformer-notes"></a> Transformer Notes</h2>
+<a name="-transformer-notes" class="anchor" href="#-transformer-notes"><span class="octicon octicon-link"></span></a><a name="transformer-notes"></a> Transformer Notes</h2>
 
-<h3>
-<a name="tn-less-styl"></a> LESS/Stylus</h3>
+<p>To use a transformer you must install the associated node module.</p>
+
+<ul>
+<li>
+<code>.coffee</code> - <code>npm install coffee-script</code>
+</li>
+<li>
+<code>.dust</code> - <code>npm install dustjs-linkedin</code>
+</li>
+<li>
+<code>.ejs</code> - <code>npm install ejs</code>
+</li>
+<li>
+<code>.hbs</code> - <code>npm install handlebars</code>
+</li>
+<li>
+<code>.jsx</code> - <code>npm install react-tools</code>
+</li>
+<li>
+<code>.less</code> - <code>npm install less</code>
+</li>
+<li>
+<code>.styl</code> - <code>npm install stylus</code>
+</li>
+</ul><h3>
+<a name="-lessstylus" class="anchor" href="#-lessstylus"><span class="octicon octicon-link"></span></a><a name="tn-less-styl"></a> LESS/Stylus</h3>
 
 <ul>
 <li>Any <code>@include/@import</code> paths are <em>relative to the path that the file is in</em>.</li>
 <li>Any <code>@include/@import</code>ed files will <em>not</em> be processed individually by Asset Smasher (i.e. you can't <code>@include</code> a LESS file that is preprocessed by ejs)</li>
 </ul><h3>
-<a name="tn-ejs"></a> ejs</h3>
+<a name="-ejs" class="anchor" href="#-ejs"><span class="octicon octicon-link"></span></a><a name="tn-ejs"></a> ejs</h3>
 
 <ul>
 <li>Any registered helpers will be exposed as global variables to the <code>ejs</code> transform.</li>
 <li>The built-in <code>asset_paths</code> helper can be used here.</li>
 </ul><h3>
-<a name="tn-dust-hbs"></a> dust and Handlebars</h3>
+<a name="-dust-and-handlebars" class="anchor" href="#-dust-and-handlebars"><span class="octicon octicon-link"></span></a><a name="tn-dust-hbs"></a> dust and Handlebars</h3>
 
 <ul>
 <li>The name of the template will be the template's "logical path" (minus the asset path it is in), minus the <code>.js.dust</code> or <code>.js.hbs</code> file extension.
