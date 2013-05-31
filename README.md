@@ -24,8 +24,9 @@ Asset Smasher is a command-line tool, express middleware, and programmatic inter
     - `.ejs` - Run a file through EJS (e.g. to populate configuration parameters into a JavaScript file)
     - `.less` - Compile Less into CSS
     - `.styl` - Compile Stylus into CSS
-    - `.hbs` - Precompile Handlebars templates into JavaScript files that register them with `Handlebars.templates`.
-    - `.dust` - Precompile Dust templates into JavaScript files that register them for use with `dust.render`.
+    - `.hbs` - Precompile [Handlebars](http://handlebarsjs.com/) templates into JavaScript files that register them with `Handlebars.templates`.
+    - `.dust` - Precompile [Dust](http://linkedin.github.io/dustjs/) templates into JavaScript files that register them for use with `dust.render`.
+    - `.jsx` - Transform JSX files (for use with [React](http://facebook.github.io/react/)) into JavaScript files.
     - Processors can be chained together.  E.g `test.js.hbs.ejs` (run Handlebars template through EJS, then compile it)
     - Additional processors can be plugged in.
 - Merging files together using Manifest files (`.mf`) with dependency management directives similar to Sprockets.
@@ -425,6 +426,15 @@ The `Asset` object returned by `getAssetByLogicalPath` has the following propert
     });
 
 ## <a name="transformer-notes"></a> Transformer Notes
+
+To use a transformer you must install the associated node module.
+ - `.coffee` - `npm install coffee-script`
+ - `.dust` - `npm install dustjs-linkedin`
+ - `.ejs` - `npm install ejs`
+ - `.hbs` - `npm install handlebars`
+ - `.jsx` - `npm install react-tools`
+ - `.less` - `npm install less`
+ - `.styl` - `npm install stylus`
 
 ### <a name="tn-less-styl"></a> LESS/Stylus
 
