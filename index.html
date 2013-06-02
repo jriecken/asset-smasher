@@ -59,6 +59,7 @@
 <a href="#transformer-notes">Transformer Notes</a>
 
 <ul>
+<li><a href="#tn-amd">AMD Support</a></li>
 <li><a href="#tn-less-styl">LESS/Stylus</a></li>
 <li><a href="#tn-ejs">ejs</a></li>
 <li><a href="#tn-dust-hbs">dust and Handlebars</a></li>
@@ -87,6 +88,7 @@
 <code>.dust</code> - Precompile <a href="http://linkedin.github.io/dustjs/">Dust</a> templates into JavaScript files that register them for use with <code>dust.render</code>.</li>
 <li>
 <code>.jsx</code> - Transform JSX files (for use with <a href="http://facebook.github.io/react/">React</a>) into JavaScript files.</li>
+<li>Can wrap CommonJS-style JavaScript files with <a href="https://github.com/amdjs/amdjs-api/wiki/AMD">AMD</a> <code>define</code> calls.</li>
 <li>Processors can be chained together.  E.g <code>test.js.hbs.ejs</code> (run Handlebars template through EJS, then compile it)</li>
 <li>Additional processors can be plugged in.</li>
 </ul>
@@ -582,6 +584,48 @@ sm.compileAssets(function(err) {
 <code>.styl</code> - <code>npm install stylus</code>
 </li>
 </ul><h3>
+<a name="-amd-support" class="anchor" href="#-amd-support"><span class="octicon octicon-link"></span></a><a name="tn-amd"></a> AMD Support</h3>
+
+<p>Asset-smasher can wrap JavaScript files that follow the <a href="http://wiki.commonjs.org/wiki/Modules">CommonJS</a> module format with <a href="https://github.com/amdjs/amdjs-api/wiki/AMD">Asynchronous Module Definition</a> <code>define</code> calls.</p>
+
+<p>To enable the wrapping of a JavaScript file, put the following at the top of it:</p>
+
+<pre><code>/** @amd */
+</code></pre>
+
+<p>This will cause asset smasher to:</p>
+
+<ul>
+<li>Parse the contents of the file for any <code>require</code> calls</li>
+<li>Wrap the contents of the file with a <code>define</code> call where the module id is the logical path of the file (minus <code>.js</code>) and the dependencies are anything that was <code>require</code>d. <code>require</code>, <code>exports</code>, and <code>module</code> are always dependencies.</li>
+</ul><p>Example (say the file is in <code>scripts/foo.js</code>)</p>
+
+<pre><code>/** @amd */
+var x = require('x');
+var y = require('../y');
+
+exports.foo = function (bar) {
+  return x(bar) + y(bar);
+};
+</code></pre>
+
+<p>This will be transformed into:</p>
+
+<pre><code>define('scripts/foo',
+       ['require', 'exports', 'module', 'x', '../y'],
+       function (require, exports, module, x, y) {
+  var x = require('x');
+  var y = require('../y');
+
+  exports.foo = function (bar) {
+    return x(bar) + y(bar);
+  };
+});
+</code></pre>
+
+<p>You can then use an AMD loader (like <a href="http://requirejs.org/">require.js</a>) to load the modules.</p>
+
+<h3>
 <a name="-lessstylus" class="anchor" href="#-lessstylus"><span class="octicon octicon-link"></span></a><a name="tn-less-styl"></a> LESS/Stylus</h3>
 
 <ul>
