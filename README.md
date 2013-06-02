@@ -11,6 +11,7 @@ Asset pre-processor, merger, and compressor for Node.js
 - [Using via Express Middleware](#express-middleware)
 - [Using via Programmatic Interface](#programmatic-interface)
 - [Transformer Notes](#transformer-notes)
+    - [AMD Support](#tn-amd)
     - [LESS/Stylus](#tn-less-styl)
     - [ejs](#tn-ejs)
     - [dust and Handlebars](#tn-dust-hbs)
@@ -27,6 +28,7 @@ Asset Smasher is a command-line tool, express middleware, and programmatic inter
     - `.hbs` - Precompile [Handlebars](http://handlebarsjs.com/) templates into JavaScript files that register them with `Handlebars.templates`.
     - `.dust` - Precompile [Dust](http://linkedin.github.io/dustjs/) templates into JavaScript files that register them for use with `dust.render`.
     - `.jsx` - Transform JSX files (for use with [React](http://facebook.github.io/react/)) into JavaScript files.
+    - Can wrap CommonJS-style JavaScript files with [AMD](https://github.com/amdjs/amdjs-api/wiki/AMD) `define` calls.
     - Processors can be chained together.  E.g `test.js.hbs.ejs` (run Handlebars template through EJS, then compile it)
     - Additional processors can be plugged in.
 - Merging files together using Manifest files (`.mf`) with dependency management directives similar to Sprockets.
@@ -435,6 +437,43 @@ To use a transformer you must install the associated node module.
  - `.jsx` - `npm install react-tools`
  - `.less` - `npm install less`
  - `.styl` - `npm install stylus`
+
+### <a name="tn-amd"></a> AMD Support
+
+Asset-smasher can wrap JavaScript files that follow the [CommonJS](http://wiki.commonjs.org/wiki/Modules) module format with [Asynchronous Module Definition](https://github.com/amdjs/amdjs-api/wiki/AMD) `define` calls.
+
+To enable the wrapping of a JavaScript file, put the following at the top of it:
+
+    /** @amd */
+
+This will cause asset smasher to:
+ - Parse the contents of the file for any `require` calls
+ - Wrap the contents of the file with a `define` call where the module id is the logical path of the file (minus `.js`) and the dependencies are anything that was `require`d. `require`, `exports`, and `module` are always dependencies.
+
+Example (say the file is in `scripts/foo.js`)
+
+    /** @amd */
+    var x = require('x');
+    var y = require('../y');
+    
+    exports.foo = function (bar) {
+      return x(bar) + y(bar);
+    };
+
+This will be transformed into:
+
+    define('scripts/foo',
+           ['require', 'exports', 'module', 'x', '../y'],
+           function (require, exports, module, x, y) {
+      var x = require('x');
+      var y = require('../y');
+      
+      exports.foo = function (bar) {
+        return x(bar) + y(bar);
+      };
+    });
+
+You can then use an AMD loader (like [require.js](http://requirejs.org/) to load the modules.
 
 ### <a name="tn-less-styl"></a> LESS/Stylus
 
