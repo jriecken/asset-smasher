@@ -1,5 +1,19 @@
 # Asset Smasher Changelog
 
+## 0.3.0 (June 1, 2013)
+
+Functional Changes
+
+- The JSX transformer now can transform `.js` files (without the additional `.jsx` extension) as long as the `/** @jsx React.DOM */` comment is present in the file.
+- For `.jsx` files, the JSX transformer will add the `/** @jsx React.DOM */` comment to the file if it is missing.
+- CommonJS-style `.js` files can now be automatically wrapped with [AMD](https://github.com/amdjs/amdjs-api/wiki/AMD) `define` calls if a `/** @amd */` comment is present in the file. See the "AMD Support" section of the README for more info.
+
+API Changes (this should only affect you if you've written custom transformers)
+
+- The `shouldTransform` and `transformedFileName` methods in transformers now receive the asset object as a second parameter
+- The asset object now has a `transformInfo` property (that is an object) that transformers can use to put information in when they are processing. This can be used, for example, to prevent a file from being processed more than once (see `jsx_transform.js` for an example)
+- Post-transform operations now must be a constructor function rather than just a function(asset, cb). This is to allow options to be passed into the post-transformer (see `end_js_semicolon.js` or the new `amd_wrapper.js` for examples)
+
 ## 0.2.12 (May 30, 2013)
 
 - Add a `.jsx` transformer for use with [React](http://facebook.github.io/react/)
