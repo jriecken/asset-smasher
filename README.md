@@ -473,7 +473,7 @@ This will be transformed into:
       };
     });
 
-You can then use an AMD loader (like [require.js](http://requirejs.org/) to load the modules.
+You can then use an AMD loader (like [require.js](http://requirejs.org/)) to load the modules.
 
 ### <a name="tn-less-styl"></a> LESS/Stylus
 
