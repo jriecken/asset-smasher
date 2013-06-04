@@ -195,6 +195,7 @@ Use `npm install -g asset-smasher` to install the `asset-smasher` command-line t
           --prefix <prefix>        prefix to append to logical paths when constructing urls. use if output dir is not served from the root of your web app []
           --helpers <js_file>      a .js module of helper functions require()s to expose to transforms []
           --plugins <js_file>      a .js plugin module []
+          --amd                    enable AMD support (give anonymous modules names, support /** @amd */ pragma comments)
           --verbose                output more verbose information about what is going on to the console
           --noclean                do not delete the output directory before generating files (by default it will be removed first)
 
@@ -416,6 +417,7 @@ The `Asset` object returned by `getAssetByLogicalPath` has the following propert
        my: 'helper',
        another: 'helper'
       },
+      amd:false,
       verbose:true,
       noclean:true
     });
@@ -442,7 +444,7 @@ To use a transformer you must install the associated node module.
 
 Asset-smasher can wrap JavaScript files that follow the [CommonJS](http://wiki.commonjs.org/wiki/Modules) module format with [Asynchronous Module Definition](https://github.com/amdjs/amdjs-api/wiki/AMD) `define` calls.
 
-To enable the wrapping of a JavaScript file, put the following at the top of it:
+To enable the wrapping of a JavaScript file, pass the `--amd` option to `asset-smahser` and put the following at the top of it:
 
     /** @amd */
 
@@ -464,13 +466,58 @@ This will be transformed into:
 
     define('scripts/foo',
            ['require', 'exports', 'module', 'x', '../y'],
-           function (require, exports, module, x, y) {
+           function (require, exports, module) {
       var x = require('x');
       var y = require('../y');
       
       exports.foo = function (bar) {
         return x(bar) + y(bar);
       };
+    });
+
+The `/** @amd */` pragma can also take a comma-delimeted list of module ids after it, which will be added to the list of dependencies. This is useful when you need a dependency to be loaded, but aren't using it directly (e.g. a jQuery plugin)
+
+Example (say the file is in `scripts/foo.js`)
+
+    /** @amd ./foo,./bar,./baz */
+    var x = require('x');
+    // ...
+
+Will be transformed into
+
+    define('scripts/foo',
+           ['require', 'exports', 'module', 'x', './foo', './bar', './baz'],
+           function (require, exports, module) {
+      var x = require('x');
+      // ...
+    });
+
+If you have any anonymous AMD modules specified (i.e. with no module id) or use the simplified commonjs wrapper, the `--amd` option will give these modules names (relative to the asset path root)
+
+Example (say the file is in `modules/test.js`)
+
+    define(['foo','bar'], function (foo, bar) {
+      // ...
+    });
+
+Will be transformed into
+
+    define('modules/test', ['foo', 'bar'], function (foo, bar) {
+      // ...
+    });
+
+And
+
+    define(function (require, exports, module) {
+      var x = require('x');
+      //...
+    });
+
+Will be transformed into
+
+    define('modules/test', ['require', 'exports', 'module', 'x'], function (require, exports, module) {
+      var x = require('x');
+      //...
     });
 
 You can then use an AMD loader (like [require.js](http://requirejs.org/)) to load the modules.

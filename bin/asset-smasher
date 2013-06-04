@@ -22,8 +22,10 @@ program.
   option('--prefix <prefix>', 'prefix to append to logical paths when constructing urls. use if output dir is not served from the root of your web app []', '').
   option('--helpers <js_file>', 'a .js module of helper functions require()s to expose to transforms []').
   option('--plugins <js_file>', 'a .js plugin module []').
+  option('--amd', 'enable AMD support (give anonymous modules names, support /** @amd */ pragma comments)').
   option('--verbose', 'output more verbose information about what is going on to the console').
   option('--noclean', 'do not delete the output directory before generating files (by default it will be removed first)');
+  ;
 
 program.on('--help', function() {
   console.log('  If --only is not specified, *all* files in the --paths will be processed.');
@@ -76,14 +78,15 @@ var smash = new Smasher({
   paths:program.paths,
   only:program.only,
   prefix:program.prefix,
-  compress:program.compress,
+  compress:!!program.compress,
   hash:program.hash,
-  gzip:program.gzip,
+  gzip:!!program.gzip,
   hashVersion:program.hashVersion,
   outputTo:outputTo,
   helpers:program.helpers ? require(path.resolve(program.helpers)) : null,
-  verbose:program.verbose,
-  noclean:program.noclean
+  amd:!!program.amd,
+  verbose:!!program.verbose,
+  noclean:!!program.noclean
 });
 var startTime = Date.now();
 smash.compileAssets(function(err) {
