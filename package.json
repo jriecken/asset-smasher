@@ -1,7 +1,7 @@
 {
   "name": "asset-smasher",
   "description": "Asset pre-processor, merger, and compressor.",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Jim Riecken <jriecken@gmail.com>",
   "keywords": [
     "asset",

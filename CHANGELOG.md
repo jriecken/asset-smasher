@@ -1,5 +1,13 @@
 # Asset Smasher Changelog
 
+## 0.3.1 (June 20, 2013)
+
+Enhanced AMD support
+
+- Make AMD support opt-in - must specify 'amd: true', or 'amd: {....}' in asset-smasher config
+- Allow a 'baseLogicalPath' option to be in the amd option object that will be stripped off the front of all module ids (useful for shortening module names if for example, they are all inside a 'js' folder in their logical path
+- Give anonymous/simple commonjs wrapped define calls module ids (and dependency arrays for simple commonjs wrapper)
+
 ## 0.3.0 (June 1, 2013)
 
 Functional Changes
