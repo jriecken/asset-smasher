@@ -280,6 +280,7 @@ require_tree "./subdir2"
       --prefix &lt;prefix&gt;        prefix to append to logical paths when constructing urls. use if output dir is not served from the root of your web app []
       --helpers &lt;js_file&gt;      a .js module of helper functions require()s to expose to transforms []
       --plugins &lt;js_file&gt;      a .js plugin module []
+      --amd                    enable AMD support (give anonymous modules names, support /** @amd */ pragma comments)
       --verbose                output more verbose information about what is going on to the console
       --noclean                do not delete the output directory before generating files (by default it will be removed first)
 
@@ -544,6 +545,7 @@ var sm = new Smasher({
    my: 'helper',
    another: 'helper'
   },
+  amd:false,
   verbose:true,
   noclean:true
 });
@@ -588,7 +590,7 @@ sm.compileAssets(function(err) {
 
 <p>Asset-smasher can wrap JavaScript files that follow the <a href="http://wiki.commonjs.org/wiki/Modules">CommonJS</a> module format with <a href="https://github.com/amdjs/amdjs-api/wiki/AMD">Asynchronous Module Definition</a> <code>define</code> calls.</p>
 
-<p>To enable the wrapping of a JavaScript file, put the following at the top of it:</p>
+<p>To enable the wrapping of a JavaScript file, pass the <code>--amd</code> option to <code>asset-smahser</code> and put the following at the top of it:</p>
 
 <pre><code>/** @amd */
 </code></pre>
@@ -613,13 +615,64 @@ exports.foo = function (bar) {
 
 <pre><code>define('scripts/foo',
        ['require', 'exports', 'module', 'x', '../y'],
-       function (require, exports, module, x, y) {
+       function (require, exports, module) {
   var x = require('x');
   var y = require('../y');
 
   exports.foo = function (bar) {
     return x(bar) + y(bar);
   };
+});
+</code></pre>
+
+<p>The <code>/** @amd */</code> pragma can also take a comma-delimeted list of module ids after it, which will be added to the list of dependencies. This is useful when you need a dependency to be loaded, but aren't using it directly (e.g. a jQuery plugin)</p>
+
+<p>Example (say the file is in <code>scripts/foo.js</code>)</p>
+
+<pre><code>/** @amd ./foo,./bar,./baz */
+var x = require('x');
+// ...
+</code></pre>
+
+<p>Will be transformed into</p>
+
+<pre><code>define('scripts/foo',
+       ['require', 'exports', 'module', 'x', './foo', './bar', './baz'],
+       function (require, exports, module) {
+  var x = require('x');
+  // ...
+});
+</code></pre>
+
+<p>If you have any anonymous AMD modules specified (i.e. with no module id) or use the simplified commonjs wrapper, the <code>--amd</code> option will give these modules names (relative to the asset path root)</p>
+
+<p>Example (say the file is in <code>modules/test.js</code>)</p>
+
+<pre><code>define(['foo','bar'], function (foo, bar) {
+  // ...
+});
+</code></pre>
+
+<p>Will be transformed into</p>
+
+<pre><code>define('modules/test', ['foo', 'bar'], function (foo, bar) {
+  // ...
+});
+</code></pre>
+
+<p>And</p>
+
+<pre><code>define(function (require, exports, module) {
+  var x = require('x');
+  //...
+});
+</code></pre>
+
+<p>Will be transformed into</p>
+
+<pre><code>define('modules/test', ['require', 'exports', 'module', 'x'], function (require, exports, module) {
+  var x = require('x');
+  //...
 });
 </code></pre>
 
