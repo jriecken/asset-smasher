@@ -1,5 +1,9 @@
 # Asset Smasher Changelog
 
+## 0.3.2 (June 20, 2013)
+
+- Check that found 'asset' is not a non-manifest directory. (Fixes #18)
+
 ## 0.3.1 (June 20, 2013)
 
 Enhanced AMD support
