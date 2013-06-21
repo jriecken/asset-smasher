@@ -17,7 +17,7 @@ program.
   option('--hash', 'generate versions of the files with md5 hashes in the name').
   option('--gzip', 'generate gzipped versions of the compiled files').
   option('--hashVersion <version>', 'invalidate all assets without changing file contents [1.0]', '1.0').
-  option('--only <pattern,...>', 'only process the files matching these glob patterns (relative to any of the paths) [**/*]', listify).
+  option('--only <pattern,...>', 'only process the files matching these glob patterns (relative to any of the paths) [**/*.*]', listify).
   option('--paths <path,...>', 'list of paths to look for assets [.]', listify, [process.cwd()]).
   option('--prefix <prefix>', 'prefix to append to logical paths when constructing urls. use if output dir is not served from the root of your web app []', '').
   option('--helpers <js_file>', 'a .js module of helper functions require()s to expose to transforms []').
