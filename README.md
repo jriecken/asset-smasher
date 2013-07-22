@@ -40,7 +40,7 @@ Asset Smasher is a command-line tool, express middleware, and programmatic inter
     - Compress CSS files with `ycssmin`
     - Generate Gzipped versions of files
     - Include a MD5 hash of the file's contents in the file name. `myAsset.js` -> `myAsset-c89cba7b7df028e65cb01d86f4d27077.js`
-        - `asset_path` helper that can be used to reference the hashed name.
+        - `asset_src` helper that can be used to reference the hashed name.
 
 It's released under the [MIT](http://en.wikipedia.org/wiki/MIT_License) license.
 
@@ -222,7 +222,7 @@ Use `npm install -g asset-smasher` to install the `asset-smasher` command-line t
 
 ### <a name="cli-helpers"></a> Helpers
 
-There is a built-in `asset_path` helper that can be used to get the "real" (i.e. with hashed file name) path of an asset.  E.g. `asset_path('css/myFile.css')` might return `'/assets/css/myFile-c89cba7b7df028e65cb01d86f4d27077.css`.
+There is a built-in `asset_src` helper that can be used to get the "real" (i.e. with hashed file name) path of an asset.  E.g. `asset_src('css/myFile.css')` might return `'/assets/css/myFile-c89cba7b7df028e65cb01d86f4d27077.css`.
 
 Some transformers (e.g. the `.ejs` one) take in a set of local variables that they can use during transformation. You can pass in the path to a JavaScript module whose exports will be included in this set of variables.
 
@@ -236,7 +236,7 @@ You can use this, for example, to set configuration parameters in your JS files:
 
     //...
     var serviceUrl = '<%= serviceUrl %>';
-    var cssLocation = '<%= asset_path('css/myFile.css') %>';
+    var cssLocation = '<%= asset_src('css/myFile.css') %>';
     //...
 
 **Execution**
@@ -530,7 +530,7 @@ You can then use an AMD loader (like [require.js](http://requirejs.org/)) to loa
 ### <a name="tn-ejs"></a> ejs
 
 - Any registered helpers will be exposed as global variables to the `ejs` transform.
-- The built-in `asset_paths` helper can be used here.
+- The built-in `asset_src` helper can be used here.
 
 ### <a name="tn-dust-hbs"></a> dust and Handlebars
 
