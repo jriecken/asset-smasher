@@ -116,7 +116,7 @@
 
 <ul>
 <li>
-<code>asset_path</code> helper that can be used to reference the hashed name.</li>
+<code>asset_src</code> helper that can be used to reference the hashed name.</li>
 </ul>
 </li>
 </ul>
@@ -195,10 +195,11 @@ require_tree "./subdir2"
 <p><strong>Directives:</strong></p>
 
 <table border="1" cellpadding="5" cellspacing="0" width="100%">
-<tr>
+<thead><tr>
 <th width="15%">Directive</th>
 <th width="85%">Description</th>
-</tr>
+</tr></thead>
+<tbody>
 <tr>
 <td><code>require "[path]"</code></td>
     <td>
@@ -251,6 +252,7 @@ require_tree "./subdir2"
       </ul>
 </td>
   </tr>
+</tbody>
 </table><h3>
 <a name="-manifest-directories" class="anchor" href="#-manifest-directories"><span class="octicon octicon-link"></span></a><a name="manifest-directories"></a> Manifest Directories</h3>
 
@@ -275,7 +277,7 @@ require_tree "./subdir2"
       --hash                   generate versions of the files with md5 hashes in the name
       --gzip                   generate gzipped versions of the compiled files
       --hashVersion &lt;version&gt;  invalidate all assets without changing file contents [1.0]
-      --only &lt;pattern,...&gt;     only process the files matching these glob patterns (relative to any of the paths) [**/*]
+      --only &lt;pattern,...&gt;     only process the files matching these glob patterns (relative to any of the paths) [**/*.*]
       --paths &lt;path,...&gt;       list of paths to look for assets [.]
       --prefix &lt;prefix&gt;        prefix to append to logical paths when constructing urls. use if output dir is not served from the root of your web app []
       --helpers &lt;js_file&gt;      a .js module of helper functions require()s to expose to transforms []
@@ -309,7 +311,7 @@ require_tree "./subdir2"
 <h3>
 <a name="-helpers" class="anchor" href="#-helpers"><span class="octicon octicon-link"></span></a><a name="cli-helpers"></a> Helpers</h3>
 
-<p>There is a built-in <code>asset_path</code> helper that can be used to get the "real" (i.e. with hashed file name) path of an asset.  E.g. <code>asset_path('css/myFile.css')</code> might return <code>'/assets/css/myFile-c89cba7b7df028e65cb01d86f4d27077.css</code>.</p>
+<p>There is a built-in <code>asset_src</code> helper that can be used to get the "real" (i.e. with hashed file name) path of an asset.  E.g. <code>asset_src('css/myFile.css')</code> might return <code>'/assets/css/myFile-c89cba7b7df028e65cb01d86f4d27077.css</code>.</p>
 
 <p>Some transformers (e.g. the <code>.ejs</code> one) take in a set of local variables that they can use during transformation. You can pass in the path to a JavaScript module whose exports will be included in this set of variables.</p>
 
@@ -324,7 +326,7 @@ require_tree "./subdir2"
 
 <pre><code>//...
 var serviceUrl = '&lt;%= serviceUrl %&gt;';
-var cssLocation = '&lt;%= asset_path('css/myFile.css') %&gt;';
+var cssLocation = '&lt;%= asset_src('css/myFile.css') %&gt;';
 //...
 </code></pre>
 
@@ -689,7 +691,7 @@ var x = require('x');
 
 <ul>
 <li>Any registered helpers will be exposed as global variables to the <code>ejs</code> transform.</li>
-<li>The built-in <code>asset_paths</code> helper can be used here.</li>
+<li>The built-in <code>asset_src</code> helper can be used here.</li>
 </ul><h3>
 <a name="-dust-and-handlebars" class="anchor" href="#-dust-and-handlebars"><span class="octicon octicon-link"></span></a><a name="tn-dust-hbs"></a> dust and Handlebars</h3>
 
