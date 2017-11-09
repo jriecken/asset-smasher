@@ -1,3 +1,5 @@
+**NOTE: This library is not maintained anymore. If you want a much better solution for JavaScript bundling, use [Webpack](https://webpack.github.io/)**
+
 # Asset Smasher
 
 Asset pre-processor, merger, and compressor for Node.js
