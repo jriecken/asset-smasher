@@ -33,7 +33,7 @@
     "minimatch": "0.2.11",
     "rimraf":"2.1.4",
     "send":"0.1.0",
-    "uglify-js": "2.2.5",
+    "uglify-js": "3.9.4",
     "underscore": "1.4.4",
     "ycssmin":"1.0.1"
   },
